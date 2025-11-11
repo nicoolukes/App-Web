@@ -10,12 +10,12 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+  <Tabs
+    screenOptions={{
+      tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tabIconSelected,
+      headerShown: false,
+      tabBarButton: HapticTab,
+    }}>
       <Tabs.Screen
         name="index"
         options={{
@@ -30,6 +30,15 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
+
+      <Tabs.Screen
+        name="usuario"
+        options={{
+          title: 'Yo',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+        }}
+      />
+
     </Tabs>
   );
 }

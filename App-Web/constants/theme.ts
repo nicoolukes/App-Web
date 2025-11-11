@@ -3,27 +3,38 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
+import { Background } from '@react-navigation/elements';
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
+const tintColorLight = '#2E7D32';
 const tintColorDark = '#fff';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    primary: '#9C784A',
+    secondary: '#6B8A6F',
+    acentuar: '#B26B34',
+    background: '#F4F1EC',
+    superficie: '#EAE6E0',
+    text: '#2E2B25',
+    textSecond:'#6B665D',
+    bordes: '#C8BFB4',
+    tabIconDefault: '#B26B34',
+    tabIconSelected: '#B26B34',
+    icon: '#2E2B25',
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    primary: '#C9A66B',
+    secondary: '#7FAE88',
+    acentuar: '#D18A54',
+    background: '#1C1C1A',
+    superficie: '#2A2A27',
+    text: '#EAE6E0',
+    textSecond:'#B3ADA3',
+    bordes: '#3B3B38',
+    tabIconDefault: '#D18A54',
+    tabIconSelected: '#D18A54',
+    icon: '#EAE6E0',
   },
 };
 

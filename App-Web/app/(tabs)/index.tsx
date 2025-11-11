@@ -1,98 +1,204 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
+import { Platform, StyleSheet, ScrollView } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Link } from 'expo-router';
+import HomeHeader from '@/components/HomeHeader';
+import { useState } from 'react';
+import Card from '@/components/Card';
 
-export default function HomeScreen() {
+import LoginForm from '@/components/LoginForm';
+import LoginScreen from '../Login';
+import { StatusBar } from 'react-native';
+import BuscarBoton from '@/components/BuscarBoton';
+import Categoria from '@/components/Categoria';
+
+const Stack = createNativeStackNavigator();
+
+export default function Index() {
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [searchVisible, setSearchVisible] = useState(false);
+ 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    
+    
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <ThemedView style={estilo.padre}>
+      <HomeHeader abrirMenu={() => setMenuVisible} abrirBuscador={() => setSearchVisible} titulo="Explorá las maravillas del museo" icon="arrow-back" />
+
+      <ScrollView>
+        <ThemedView style={estilo.body}>
+
+          <ThemedView style={estilo.buscador}>
+            <BuscarBoton />
+          </ThemedView>
+
+          <ScrollView horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingHorizontal: 8, // espacio lateral
+              gap: 8, // separa las tarjetas 
+              marginBottom:24
+            }}>
+            <Categoria
+              icono="search"
+              title='Fosiles'
+            />
+            <Categoria
+              icono="search"
+              title='Mamiferos'
+            />
+            <Categoria
+              icono="search"
+              title='Aves'
+            />
+            <Categoria
+              icono="search"
+              title='herramientas'
+            />
+            <Categoria
+              icono="search"
+              title='Buscar'
+            />
+
+          </ScrollView>
+
+          <ThemedView style={estilo.containerCarrusel}>
+            <ThemedView style={estilo.carrusel}>
+              <ThemedText type="title" style={estilo.text}>Destacado</ThemedText>
+              <ScrollView horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: 24, // espacio lateral
+                  gap: 16, // separa las tarjetas 
+                }}>
+                <Card
+                  image={{ uri: 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/img1(dino).jpg' }}
+                  title="Zorro Rojo"
+                  description="Zorro Rojo"
+                  width={0.6}
+                  aspectRatio={2 / 3}
+                  id = {1}
+                />
+                <Card
+                  image={{ uri: 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/img2(mano).jpg' }}
+                  title="Ñandu Pampeano"
+                  description="Ñandu Pampeano"
+                  width={0.6}
+                  aspectRatio={2 / 3}
+                  id  = {2}
+                />
+                <Card
+                  image={{ uri: 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/img3(dino).jpg' }}
+                  title="La mejor fauna"
+                  description="La mejor fauna"
+                  width={0.6}
+                  aspectRatio={2 / 3}
+                  id  = {3}
+                />
+                <Card
+                  image={{ uri: 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/img4(piedra).jpg' }}
+                  title="Fauna"
+                  description="La mejor fauna"
+                  width={0.6}
+                  aspectRatio={2 / 3}
+                  id = {4}
+                />
+              </ScrollView>
+
+            </ThemedView>
+
+            <ThemedView style={estilo.carrusel}>
+              <ThemedText type="subtitle" style={estilo.text}>Colecciones</ThemedText>
+              <ScrollView horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: 24, // espacio lateral
+                  gap: 16, // separa las tarjetas 
+                }}>
+                <Card
+                  image={{ uri: 'https://i.pinimg.com/736x/75/73/78/7573783da70edef3fa15c8b746115abd.jpg' }}
+                  title="Fauna"
+                  description="La mejor fauna"
+                  width={0.5}
+                  aspectRatio={1}
+                  id = {10}
+                />
+                <Card
+                  image={{ uri: 'https://i.pinimg.com/1200x/7b/6d/ba/7b6dba82ccba3ba322d1120a8e0177a2.jpg' }}
+                  title="Flora"
+                  description="La mejor fauna"
+                  width={0.5}
+                  aspectRatio={1}
+                  id = { 11}
+
+                />
+                <Card
+                  image={{ uri: 'https://i.pinimg.com/736x/75/73/78/7573783da70edef3fa15c8b746115abd.jpg' }}
+                  title="Fauna"
+                  description="La mejor fauna"
+                  width={0.5}
+                  aspectRatio={1}
+                  id = { 12}
+                />
+                <Card
+                  image={{ uri: 'https://i.pinimg.com/736x/75/73/78/7573783da70edef3fa15c8b746115abd.jpg' }}
+                  title="Fauna"
+                  description="La mejor fauna"
+                  width={0.5}
+                  aspectRatio={1}
+                  id = { 13}
+                />
+              </ScrollView>
+
+            </ThemedView>
+          </ThemedView>
+
+        </ThemedView>
+      </ScrollView>
+    </ThemedView>
+
+
+
+
+
   );
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+const estilo = StyleSheet.create({
+  padre: {
+    flex: 1,
+    paddingTop: 60 + (Platform.OS === 'android' ? (StatusBar.currentHeight ?? 0) : 0)
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+
+  buscador: {
+    marginBottom: 32
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+
+  header: {
+
   },
+
+  body: {
+    marginTop: 24
+  },
+
+  containerCarrusel: {
+
+  },
+
+  carrusel: {
+    marginTop: 8
+  },
+
+  text: {
+    marginLeft: 16,
+
+
+  }
+
+
 });
