@@ -21,6 +21,8 @@ type MediaItem = {
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
+//import * as Speech from "expo-speech";
+//import { Button } from "react-native";
 
 export default function DetalleColeccion() {
     type Coleccion = {
@@ -45,6 +47,35 @@ export default function DetalleColeccion() {
     };
 
     const [comentarios, setComentarios] = useState<Comentario[]>([]);
+
+    // FUNCIÓN PARA LEER: en voz alta 
+    const leerInformacion = () => {
+        if (!coleccion) return;
+
+        const texto = `
+    Título: ${coleccion.titulo || "sin título"}.
+    Descripción: ${coleccion.descripcion || "sin descripción"}.
+    Características: ${Array.isArray(coleccion.caracteristica)
+                ? coleccion.caracteristica.join(", ")
+                : coleccion.caracteristica
+            }.
+    Autor: ${coleccion.autor || "desconocido"}.
+    Fecha: ${coleccion.fecha || "no especificada"}.
+    Categoría: ${coleccion.categoria || "sin categoría"}.
+  `;
+
+        /*Speech.speak(texto, {
+            language: "es-ES",
+            rate: 1.0,
+            pitch: 1.0,
+        });*/
+    };
+
+    // ⏹️ FUNCIÓN PARA DETENER
+    const detenerLectura = () => {
+       // Speech.stop();
+    };
+
 
 
     useEffect(() => {
@@ -139,75 +170,92 @@ export default function DetalleColeccion() {
 
                     <BlurView intensity={50} style={styles.blurOverlay}>
                         {/* Imagen y título fijos */}
-                        <TouchableOpacity
-                            onPress={() => setVisibleModal(true)}
-                            style={{ width: "100%", alignItems: "center" }}
-                        >
-                            <Image
-                                style={styles.imagen}
-                                source={{ uri: `http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/${coleccion?.nombre_archivo}` }}
-                            />
-                        </TouchableOpacity>
+                        <ScrollView contentContainerStyle={{ alignItems: "center", paddingBottom: 60 }}>
+                            <TouchableOpacity
+                                onPress={() => setVisibleModal(true)}
+                                style={{ width: "100%", alignItems: "center" }}
+                            >
+                                <Image
+                                    style={styles.imagen}
+                                    source={{ uri: `http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/${coleccion?.nombre_archivo}` }}
+                                />
+                            </TouchableOpacity>
 
 
 
-                        <ThemedText style={styles.titulo}>{coleccion?.titulo}</ThemedText>
+                            <ThemedText style={styles.titulo}>{coleccion?.titulo}</ThemedText>
 
-                        {/* Slider horizontal de infoCards */}
-                        <ScrollView
-                            horizontal
-                            showsHorizontalScrollIndicator={true}
-                            contentContainerStyle={styles.sliderContainer}
-                        >
-                            <ThemedView style={styles.infoCard}>
-                                <ScrollView style={{ backgroundColor: '0000' }}>
-                                    <ThemedText style={styles.subtitle}>Descripción:</ThemedText>
-                                    <ThemedText type="defaultSemiBold">
-                                        {coleccion?.descripcion}
-                                    </ThemedText>
-                                </ScrollView>
+                            {/* Botones circulares */}
+                            <View style={styles.botonera}>
+                                <TouchableOpacity style={styles.botonCircular} onPress={leerInformacion}>
+                                    <Text style={styles.iconoBoton}>🔈</Text>
+                                </TouchableOpacity>
 
-                            </ThemedView>
+                                <TouchableOpacity
+                                    style={[styles.botonCircular, { backgroundColor: "rgba(235, 182, 102, 1)" }]}
+                                    onPress={detenerLectura}
+                                >
+                                    <Text style={styles.iconoBoton}>⏹</Text>
+                                </TouchableOpacity>
+                            </View>
 
-                            <ThemedView style={styles.infoCard}>
-                                <ScrollView>
-                                    <ThemedText style={styles.subtitle}>Características:</ThemedText>
-                                    <ThemedView style={styles.tagsWrapper}>
-                                        {renderCaracteristicaTags()}
-                                    </ThemedView>
-                                </ScrollView>
 
-                            </ThemedView>
+                            {/* Slider horizontal de infoCards */}
+                            <ScrollView
+                                horizontal
+                                showsHorizontalScrollIndicator={true}
+                                contentContainerStyle={styles.sliderContainer}
+                            >
+                                <ThemedView style={styles.infoCard}>
+                                    <ScrollView style={{ backgroundColor: '0000' }}>
+                                        <ThemedText style={styles.subtitle}>Descripción:</ThemedText>
+                                        <ThemedText type="defaultSemiBold">
+                                            {coleccion?.descripcion}
+                                        </ThemedText>
+                                    </ScrollView>
 
-                            <ThemedView style={styles.infoCard}>
-                                <ScrollView>
-                                    <ThemedText style={styles.subtitle}>Información:</ThemedText>
-                                    <ThemedText type="defaultSemiBold">
-                                        Autor: {coleccion?.autor}{'\n'}
-                                        Fecha: {coleccion?.fecha}{'\n'}
-                                        Tipo: {coleccion?.categoria}{'\n'}
-                                    </ThemedText>
-                                </ScrollView>
+                                </ThemedView>
 
-                            </ThemedView>
+                                <ThemedView style={styles.infoCard}>
+                                    <ScrollView>
+                                        <ThemedText style={styles.subtitle}>Características:</ThemedText>
+                                        <ThemedView style={styles.tagsWrapper}>
+                                            {renderCaracteristicaTags()}
+                                        </ThemedView>
+                                    </ScrollView>
 
-                        </ScrollView>
+                                </ThemedView>
 
-                        <ThemedView style={styles.comentarios}>
-                            <ThemedText style={styles.subtitle}>Comentarios:</ThemedText>
-                            <ScrollView style={{ maxHeight: 200 }}>
-                                {comentarios.length > 0 ? (
-                                    comentarios.map((comentario, index) => (
-                                        <View key={index} style={styles.comentarioCard}>
-                                            <Text style={styles.comentarioUser}>{comentario.usuario}</Text>
-                                            <Text style={styles.comentarioText}>{comentario.texto}</Text>
-                                        </View>
-                                    ))
-                                ) : (
-                                    <Text style={{ color: '#ccc' }}>Aún no hay comentarios.</Text>
-                                )}
+                                <ThemedView style={styles.infoCard}>
+                                    <ScrollView>
+                                        <ThemedText style={styles.subtitle}>Información:</ThemedText>
+                                        <ThemedText type="defaultSemiBold">
+                                            Autor: {coleccion?.autor}{'\n'}
+                                            Fecha: {coleccion?.fecha}{'\n'}
+                                            Tipo: {coleccion?.categoria}{'\n'}
+                                        </ThemedText>
+                                    </ScrollView>
+
+                                </ThemedView>
+
                             </ScrollView>
-                        </ThemedView>
+
+                            <ThemedView style={styles.comentarios}>
+                                <ThemedText style={styles.subtitle}>Comentarios:</ThemedText>
+                                <ScrollView style={{ maxHeight: 200 }}>
+                                    {comentarios.length > 0 ? (
+                                        comentarios.map((comentario, index) => (
+                                            <View key={index} style={styles.comentarioCard}>
+                                                <Text style={styles.comentarioUser}>{comentario.usuario}</Text>
+                                                <Text style={styles.comentarioText}>{comentario.texto}</Text>
+                                            </View>
+                                        ))
+                                    ) : (
+                                        <Text style={{ color: '#ccc' }}>Aún no hay comentarios.</Text>
+                                    )}
+                                </ScrollView>
+                            </ThemedView>
+                        </ScrollView>
                     </BlurView>
                 </ImageBackground>
             </ThemedView>
@@ -247,6 +295,33 @@ export default function DetalleColeccion() {
 
 
 const styles = StyleSheet.create({
+    botonera: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 20,
+        marginVertical: 10,
+    },
+
+    botonCircular: {
+        backgroundColor: "#b6ec8f7a",
+        width: 50,
+        height: 50,
+        borderRadius: 50,
+        justifyContent: "center",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 6,
+    },
+
+    iconoBoton: {
+        color: "#fff",
+        fontSize: 20
+    },
+
     container: {
         flex: 1,
         backgroundColor: '#00000006',
