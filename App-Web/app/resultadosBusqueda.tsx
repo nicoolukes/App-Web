@@ -3,12 +3,14 @@ import { FlatList, StyleSheet, TextInput, TouchableOpacity, View } from 'react-n
 import { useNavigation } from 'expo-router';
 import { ThemedView } from '@/components/themed-view';
 import { ThemedText } from '@/components/themed-text';
-import { useColorScheme} from '@/hooks/use-color-scheme.web';
+import { useColorScheme } from '@/hooks/use-color-scheme.web';
 import { Colors } from '@/constants/theme';
+import { useRouter } from 'expo-router';
+import Header from '@/components/Header';
 
 interface ResultadoBusqueda {
   id: number;
-  nombre: string;
+  titulo: string;
 }
 
 export default function BuscarScreen() {
@@ -17,7 +19,8 @@ export default function BuscarScreen() {
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  
+  const router = useRouter();
+
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -31,89 +34,101 @@ export default function BuscarScreen() {
     return () => clearTimeout(delay);
   }, [texto]);
 
-  const buscarEnApi = (query: string) => {
-    const todos = [
-      { id: 1, nombre: 'Colección de arte' },
-      { id: 2, nombre: 'Historia natural' },
-      { id: 3, nombre: 'Fotografía antigua' },
-      { id: 4, nombre: 'Esculturas' },
-      { id: 5, nombre: 'Pinturas rupestres' },
-    ];
-     /*try{
-           
-            const resultado = await fetch(`https://tu-api.com/buscar?query=${query}`);
-            const datos = await resultado.json();
+  const buscarEnApi = async (query: string) => {
 
-            navegar.navidate('ResultadoBusqueda', {resultados: datos, query})
-            
-        }catch (error){
-            console.error('Error al buscar', error)
-        }*/
+    try {
 
-    const filtrados = todos.filter((item) =>
-      item.nombre.toLowerCase().includes(query.toLowerCase())
-    );
+      const response = await fetch(`http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/endpoints/listar_img.php?query=${query}`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const datos = await response.json();
 
-    setResultados(filtrados);
+      const filtrados = datos.filter((item: any) =>
+        item.titulo.toLowerCase().includes(query.toLowerCase())
+      );
+      setResultados(filtrados);
+
+    } catch (error) {
+      console.error('Error al buscar:', error);
+      setResultados([]);
+    }
+
   };
 
   const irADetalle = (item: ResultadoBusqueda) => {
-    (navigation as any).navigate('Colecciones', { objeto: item });
+    router.push({
+      pathname: "/DetalleColeccion",
+      params: { id: item.id }
+    });
   };
 
   const renderItem = ({ item }: { item: ResultadoBusqueda }) => (
     <TouchableOpacity onPress={() => irADetalle(item)} style={estilo.itemContainer}>
-      <ThemedText style={estilo.itemText}>{item.nombre}</ThemedText>
+      <ThemedText style={estilo.itemText}>{item.titulo}</ThemedText>
     </TouchableOpacity>
   );
 
   return (
-    <ThemedView style={estilo.container}>
-      <TextInput
-        autoFocus
-        placeholder="Buscá en el museo..."
-        placeholderTextColor="#B3ADA3"
-        value={texto}
-        onChangeText={setTexto}
-        style={[estilo.input, {color:colors.text}]}
-        
-      />
+    <ThemedView style={estilo.pantalla}>
+      <Header title="Buscar en el museo" />
 
-      <FlatList
-        data={resultados}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-        ListEmptyComponent={
-          texto.trim().length > 0 && resultados.length === 0 ? (
-            <ThemedText style={estilo.emptyText}>No se encontraron resultados.</ThemedText>
-          ) : null
-        }
-      />
+      <ThemedView style={estilo.contenido}>
+        <TextInput
+          autoFocus
+          placeholder="Buscá en el museo..."
+          placeholderTextColor="#B3ADA3"
+          value={texto}
+          onChangeText={setTexto}
+          style={[estilo.input, { color: colors.text }]}
+        />
+
+        <FlatList
+          data={resultados}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          contentContainerStyle={
+            resultados.length === 0 ? { flex: 1 } : null
+          }
+          ListEmptyComponent={
+            texto.trim().length > 0 && resultados.length === 0 ? (
+              <ThemedText style={estilo.emptyText}>
+                No se encontraron resultados.
+              </ThemedText>
+            ) : null
+          }
+        />
+      </ThemedView>
     </ThemedView>
   );
 }
 
 const estilo = StyleSheet.create({
-  container: {
+  pantalla: {
+    flex: 1,
+    backgroundColor: '#121212', // o el color de tu tema
+  },
+  contenido: {
     flex: 1,
     padding: 16,
-  },
+    paddingTop: 120, 
+  }, 
   input: {
     height: 56,
-    borderColor: 'gray',
+    borderColor: '#555',
     borderWidth: 1.5,
-    borderRadius: 32,
+    borderRadius: 28,
     paddingHorizontal: 16,
     color: 'white',
     marginBottom: 16,
+    backgroundColor: '#1E1E1E', // más contraste con el fondo
   },
   itemContainer: {
     paddingVertical: 16,
     borderBottomWidth: 1,
-    
+    borderBottomColor: '#333',
   },
   itemText: {
     fontSize: 16,
+    color: '#fff',
   },
   emptyText: {
     marginTop: 32,

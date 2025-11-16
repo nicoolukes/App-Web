@@ -9,14 +9,22 @@ import { useRouter } from "expo-router";
 import DetalleColeccion from "@/app/DetalleColeccion";
 
 const { width: screenWidth } = Dimensions.get('window');
-export default function Card({ image, title, description, width = 0.9, aspectRatio = 16 / 9, id }: { image: any, title: string, description: string, width: number, aspectRatio: number, id: number }) {
+export default function Card({ image, title, description, width = 0.9, aspectRatio = 16 / 9, id, requierePremiun, esPremium, onPress, abrirModalPremiun}: { image: any, title: string, description: string, width: number, aspectRatio: number, id: number, requierePremiun?: boolean, esPremium?: boolean, onPress?: () => void, abrirModalPremiun?: () => void }) {
     const router = useRouter();
     const cardWidth = screenWidth * width;
+
+    const puedePresionar = !requierePremiun || esPremium;
+
+    const presionarCard = () => {
+        if (!puedePresionar) {
+            abrirModalPremiun && abrirModalPremiun();
+        }else{
+            onPress && onPress();
+        }
+    }
+    
     return (
-        <TouchableOpacity  onPress={() => router.push({
-            pathname: "/DetalleColeccion",
-            params: { id: id} // 👈 enviamos el título como parámetro
-            })} style={[estilo.card, { width: cardWidth, aspectRatio }] }>
+        <TouchableOpacity  onPress={presionarCard} style={[estilo.card, { width: cardWidth, aspectRatio }] }>
             
                 <ImageBackground
                     source={image}
