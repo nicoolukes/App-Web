@@ -76,7 +76,7 @@ export default function Index() {
                   gap: 16, // separa las tarjetas 
                 }}>
                 <Card
-                  image={{ uri: 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/img1(dino).jpg' }}
+                  image={{ uri: 'http://192.168.1.185/App/App-Web/API_Proyecto/uploads/img1(dino).jpg' }}
                   title="Zorro Rojo"
                   description="Zorro Rojo"
                   width={0.6}
@@ -84,7 +84,7 @@ export default function Index() {
                   id = {1}
                 />
                 <Card
-                  image={{ uri: 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/img2(mano).jpg' }}
+                  image={{ uri: 'http://192.168.1.185/App/App-Web/API_Proyecto/uploads/img2(mano).jpg' }}
                   title="Ñandu Pampeano"
                   description="Ñandu Pampeano"
                   width={0.6}
@@ -92,7 +92,7 @@ export default function Index() {
                   id  = {2}
                 />
                 <Card
-                  image={{ uri: 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/img3(dino).jpg' }}
+                  image={{ uri: 'http://192.168.1.185/App/App-Web/API_Proyecto/uploads/img3(dino).jpg' }}
                   title="La mejor fauna"
                   description="La mejor fauna"
                   width={0.6}
@@ -100,7 +100,7 @@ export default function Index() {
                   id  = {3}
                 />
                 <Card
-                  image={{ uri: 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/img4(piedra).jpg' }}
+                  image={{ uri: 'http://192.168.1.185/App/App-Web/API_Proyecto/uploads/img4(piedra).jpg' }}
                   title="Fauna"
                   description="La mejor fauna"
                   width={0.6}

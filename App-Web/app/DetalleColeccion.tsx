@@ -11,6 +11,8 @@ import { ImageBackground } from "react-native";
 import { BlurView } from "expo-blur";
 import Header from "@/components/Header";
 import { LinearGradient } from "expo-linear-gradient";
+import * as Speech from "expo-speech";
+import { Button } from "react-native";
 
 export default function DetalleColeccion() {
     type Coleccion = {
@@ -34,6 +36,35 @@ export default function DetalleColeccion() {
     };
 
     const [comentarios, setComentarios] = useState<Comentario[]>([]);
+
+    // FUNCIÓN PARA LEER: en voz alta 
+    const leerInformacion = () => {
+        if (!coleccion) return;
+
+        const texto = `
+    Título: ${coleccion.titulo || "sin título"}.
+    Descripción: ${coleccion.descripcion || "sin descripción"}.
+    Características: ${Array.isArray(coleccion.caracteristica)
+                ? coleccion.caracteristica.join(", ")
+                : coleccion.caracteristica
+            }.
+    Autor: ${coleccion.autor || "desconocido"}.
+    Fecha: ${coleccion.fecha || "no especificada"}.
+    Categoría: ${coleccion.categoria || "sin categoría"}.
+  `;
+
+        Speech.speak(texto, {
+            language: "es-ES",
+            rate: 1.0,
+            pitch: 1.0,
+        });
+    };
+
+    // ⏹️ FUNCIÓN PARA DETENER
+    const detenerLectura = () => {
+        Speech.stop();
+    };
+
 
 
     useEffect(() => {
@@ -91,7 +122,7 @@ export default function DetalleColeccion() {
         <ThemedView style={styles.container}>
 
             <ImageBackground
-                source={{ uri: `http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/${coleccion?.nombre_archivo}` }}
+                source={{ uri: `http://192.168.1.134/App/App-Web/API_Proyecto/uploads/${coleccion?.nombre_archivo}` }}
                 style={styles.background}
                 blurRadius={10} // si no usás expo-blur
             >
@@ -102,69 +133,91 @@ export default function DetalleColeccion() {
                 <Header />
 
                 <BlurView intensity={50} style={styles.blurOverlay}>
+                    {/* Scroll general para que no se corte el contenido */}
                     {/* Imagen y título fijos */}
+                    <ScrollView contentContainerStyle={{ alignItems: "center", paddingBottom: 60 }}>
 
-                    <Image
-                        style={styles.imagen}
-                        source={{ uri: `http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/${coleccion?.nombre_archivo}` }}
-                    />
-                    <ThemedText style={styles.titulo}>{coleccion?.titulo}</ThemedText>
+                        <Image
+                            style={styles.imagen}
+                            source={{ uri: `http://192.168.1.134/App/App-Web/API_Proyecto/uploads/${coleccion?.nombre_archivo}` }}
+                        />
+                        <ThemedText style={styles.titulo}>{coleccion?.titulo}</ThemedText>
+                        {/* Botones circulares */}
+                        <View style={styles.botonera}>
+                            <TouchableOpacity style={styles.botonCircular} onPress={leerInformacion}>
+                                <Text style={styles.iconoBoton}>🔈</Text>
+                            </TouchableOpacity>
 
-                    {/* Slider horizontal de infoCards */}
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={true}
-                        contentContainerStyle={styles.sliderContainer}
-                    >
-                        <ThemedView style={styles.infoCard}>
-                            <ScrollView style={{ backgroundColor: '0000' }}>
-                                <ThemedText style={styles.subtitle}>Descripción:</ThemedText>
-                                <ThemedText type="defaultSemiBold">
-                                    {coleccion?.descripcion}
-                                </ThemedText>
-                            </ScrollView>
+                            <TouchableOpacity
+                                style={[styles.botonCircular, { backgroundColor: "rgba(235, 182, 102, 1)" }]}
+                                onPress={detenerLectura}
+                            >
+                                <Text style={styles.iconoBoton}>⏹</Text>
+                            </TouchableOpacity>
+                        </View>
 
-                        </ThemedView>
 
-                        <ThemedView style={styles.infoCard}>
-                            <ScrollView>
-                                <ThemedText style={styles.subtitle}>Características:</ThemedText>
-                                <ThemedView style={styles.tagsWrapper}>
-                                    {renderCaracteristicaTags()}
-                                </ThemedView>
-                            </ScrollView>
+                        {/* Slider horizontal de infoCards */}
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={true}
+                            contentContainerStyle={styles.sliderContainer}
+                        >
+                            {/* Descripción */}
 
-                        </ThemedView>
+                            <ThemedView style={styles.infoCard}>
+                                <ScrollView style={{ backgroundColor: '0000' }}>
+                                    <ThemedText style={styles.subtitle}>Descripción:</ThemedText>
+                                    <ThemedText type="defaultSemiBold">
+                                        {coleccion?.descripcion}
+                                    </ThemedText>
+                                </ScrollView>
 
-                        <ThemedView style={styles.infoCard}>
-                            <ScrollView>
-                                <ThemedText style={styles.subtitle}>Información:</ThemedText>
-                                <ThemedText type="defaultSemiBold">
-                                    Autor: {coleccion?.autor}{'\n'}
-                                    Fecha: {coleccion?.fecha}{'\n'}
-                                    Tipo: {coleccion?.categoria}{'\n'}
-                                </ThemedText>
-                            </ScrollView>
+                            </ThemedView>
 
-                        </ThemedView>
+                            {/* Características */}
+                            <ThemedView style={styles.infoCard}>
+                                <ScrollView>
+                                    <ThemedText style={styles.subtitle}>Características:</ThemedText>
+                                    <ThemedView style={styles.tagsWrapper}>
+                                        {renderCaracteristicaTags()}
+                                    </ThemedView>
+                                </ScrollView>
 
-                    </ScrollView>
+                            </ThemedView>
 
-                    <ThemedView style={styles.comentarios}>
-                        <ThemedText style={styles.subtitle}>Comentarios:</ThemedText>
-                        <ScrollView style={{ maxHeight: 200 }}>
-                            {comentarios.length > 0 ? (
-                                comentarios.map((comentario, index) => (
-                                    <View key={index} style={styles.comentarioCard}>
-                                        <Text style={styles.comentarioUser}>{comentario.usuario}</Text>
-                                        <Text style={styles.comentarioText}>{comentario.texto}</Text>
-                                    </View>
-                                ))
-                            ) : (
-                                <Text style={{ color: '#ccc' }}>Aún no hay comentarios.</Text>
-                            )}
+                            {/* Información adicional */}
+                            <ThemedView style={styles.infoCard}>
+                                <ScrollView>
+                                    <ThemedText style={styles.subtitle}>Información:</ThemedText>
+                                    <ThemedText type="defaultSemiBold">
+                                        Autor: {coleccion?.autor}{'\n'}
+                                        Fecha: {coleccion?.fecha}{'\n'}
+                                        Tipo: {coleccion?.categoria}{'\n'}
+                                    </ThemedText>
+                                </ScrollView>
+
+                            </ThemedView>
+
                         </ScrollView>
-                    </ThemedView>
+
+                        {/* Comentarios */}
+                        <ThemedView style={styles.comentarios}>
+                            <ThemedText style={styles.subtitle}>Comentarios:</ThemedText>
+                            <ScrollView style={{ maxHeight: 200 }}>
+                                {comentarios.length > 0 ? (
+                                    comentarios.map((comentario, index) => (
+                                        <View key={index} style={styles.comentarioCard}>
+                                            <Text style={styles.comentarioUser}>{comentario.usuario}</Text>
+                                            <Text style={styles.comentarioText}>{comentario.texto}</Text>
+                                        </View>
+                                    ))
+                                ) : (
+                                    <Text style={{ color: '#ccc' }}>Aún no hay comentarios.</Text>
+                                )}
+                            </ScrollView>
+                        </ThemedView>
+                    </ScrollView>
                 </BlurView>
             </ImageBackground>
         </ThemedView>
@@ -175,6 +228,33 @@ export default function DetalleColeccion() {
 
 
 const styles = StyleSheet.create({
+    botonera: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 20,
+        marginVertical: 10,
+    },
+
+    botonCircular: {
+        backgroundColor: "#b6ec8f7a",
+        width: 50,
+        height: 50,
+        borderRadius: 50,
+        justifyContent: "center",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 6,
+    },
+
+    iconoBoton: {
+        color: "#fff",
+        fontSize: 20
+    },
+
     container: {
         flex: 1,
         backgroundColor: '#00000006',
@@ -250,28 +330,28 @@ const styles = StyleSheet.create({
         gap: 8,
     },
     comentarios: {
-    width: '90%',
-    marginTop: 24,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 20,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
-},
-comentarioCard: {
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderRadius: 12,
-    padding: 10,
-    marginBottom: 10,
-},
-comentarioUser: {
-    color: '#fff',
-    fontWeight: 'bold',
-},
-comentarioText: {
-    color: '#ddd',
-    marginTop: 4,
-},
+        width: '90%',
+        marginTop: 24,
+        backgroundColor: 'rgba(255,255,255,0.1)',
+        borderRadius: 20,
+        padding: 16,
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.2)',
+    },
+    comentarioCard: {
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        borderRadius: 12,
+        padding: 10,
+        marginBottom: 10,
+    },
+    comentarioUser: {
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+    comentarioText: {
+        color: '#ddd',
+        marginTop: 4,
+    },
 
 
 });
