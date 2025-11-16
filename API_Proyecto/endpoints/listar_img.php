@@ -7,21 +7,40 @@ header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json; charset=utf-8");
 
 // Leer parámetro GET (si existe)
-$categoria = isset($_GET['categoria']) ? $_GET['categoria'] : null;
+$categoria = isset($_GET['categoria']) ? trim($_GET['categoria']) : null;
+$query = isset($_GET['query']) ? trim($_GET['query']) : null;
 
-// Construir la consulta base
+// Consulta base
 $sql = "SELECT * FROM imagenes";
+$conditions = [];
+$params = [];
+$types = "";
 
-// Si se especifica una categoría, agregar filtro
+// Filtros dinámicos
 if ($categoria) {
-    $sql .= " WHERE categoria = ?";
+    $conditions[] = "categoria = ?";
+    $params[] = $categoria;
+    $types .= "s";
 }
 
-// Preparar la consulta
+if ($query) {
+    $conditions[] = "(titulo LIKE ? OR descripcion LIKE ?)";
+    $searchTerm = "%" . $query . "%";
+    $params[] = $searchTerm;
+    $params[] = $searchTerm;
+    $types .= "ss";
+}
+
+// Unir condiciones con AND si hay alguna
+if (!empty($conditions)) {
+    $sql .= " WHERE " . implode(" AND ", $conditions);
+}
+
+// Preparar y ejecutar
 $stmt = $conn->prepare($sql);
 
-if ($categoria) {
-    $stmt->bind_param("s", $categoria);
+if (!empty($params)) {
+    $stmt->bind_param($types, ...$params);
 }
 
 $stmt->execute();
