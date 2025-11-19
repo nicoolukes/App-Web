@@ -14,7 +14,7 @@ export default function ColeccionScreen() {
     const colorScheme = useColorScheme();
     const colors = Colors[colorScheme ?? 'light'];
     const { categoria } = useLocalSearchParams();
-
+    console.log("la categoria es:", categoria);
 
     const [datos, setDatos] = useState<any[]>([]);
     const [cargando, setCargando] = useState(true);
@@ -27,7 +27,7 @@ export default function ColeccionScreen() {
                 setError(null);
 
 
-                const respuesta = await fetch(`http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/endpoints/listar_img.php?categoria=Paleontologia`);
+                const respuesta = await fetch(`http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/endpoints/listar_img.php?categoria=${categoria}`);
 
                 if (!respuesta.ok) throw new Error('Error al obtener los datos');
 

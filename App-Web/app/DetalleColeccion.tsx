@@ -13,6 +13,21 @@ import Header from "@/components/Header";
 import { LinearGradient } from "expo-linear-gradient";
 import { FlatList, ListRenderItem, Dimensions } from "react-native";
 import { Video, ResizeMode } from "expo-av";
+import * as Speech from "expo-speech";
+import { Feather, Entypo, Ionicons } from "@expo/vector-icons";
+import { onAuthStateChanged } from "firebase/auth";
+import type { User } from "firebase/auth";
+import React from 'react';
+import { auth } from "@/credenciales";
+import { guradarLike, verificarLike } from "@/fciones/guardarLike";
+//import MediaCarousel from "./MediaCarousel";
+import { useDetalleColeccion } from "../hooks/use-detalleColec";
+import { useAuthUser } from "../hooks/use-auth";
+import { useLike } from "../hooks/use-like";
+import { useSpeech } from "../hooks/use-speech"
+import generarTexto from "@/fciones/generarTexto";
+
+
 
 type MediaItem = {
     type: "image" | "video";
@@ -21,8 +36,7 @@ type MediaItem = {
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
-//import * as Speech from "expo-speech";
-//import { Button } from "react-native";
+
 
 export default function DetalleColeccion() {
     type Coleccion = {
@@ -36,52 +50,80 @@ export default function DetalleColeccion() {
 
 
     };
-
-    const { id } = useLocalSearchParams()
-    const [coleccion, setColeccion] = useState<Coleccion | null>(null);
-    const [cargando, setCargando] = useState(false);
-    const [modalVisible, setVisibleModal] = useState(false);
     type Comentario = {
         usuario: string;
         texto: string;
     };
 
+   //const [isLiked, setLiked] = useState(false);
+    //const [isReading, setIsReading] = useState(false);
+    //const { id } = useLocalSearchParams()
+    //const { premiun } = useLocalSearchParams()
+    //const [coleccion, setColeccion] = useState<Coleccion | null>(null);
+    const [cargando, setCargando] = useState(false);
+    const [modalVisible, setVisibleModal] = useState(false);
     const [comentarios, setComentarios] = useState<Comentario[]>([]);
+    //const [user, setUsuario] = useState<User | null>(null);
+
+    const { id, premiun } = useLocalSearchParams();
+    const { coleccion, loading } = useDetalleColeccion(id);
+    const user = useAuthUser();
+    const { isLiked, like } = useLike(user, id);
+    const { reading, leer, detener } = useSpeech();
+
+   
+
+    console.log("es premiunn:", premiun);
+    
+
+
+   /* useEffect(() => {
+
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setUsuario(user);
+        });
+
+
+        return unsubscribe;
+    }, []);*/
 
     // FUNCIÓN PARA LEER: en voz alta 
-    const leerInformacion = () => {
+   /* const leerInformacion = () => {
         if (!coleccion) return;
 
-        const texto = `
-    Título: ${coleccion.titulo || "sin título"}.
-    Descripción: ${coleccion.descripcion || "sin descripción"}.
-    Características: ${Array.isArray(coleccion.caracteristica)
+       texto = generarTexto(coleccion);
+        /*const texto = `
+                Título: ${coleccion.titulo || "sin título"}.
+                Descripción: ${coleccion.descripcion || "sin descripción"}.
+                Características: ${Array.isArray(coleccion.caracteristica)
                 ? coleccion.caracteristica.join(", ")
                 : coleccion.caracteristica
             }.
-    Autor: ${coleccion.autor || "desconocido"}.
-    Fecha: ${coleccion.fecha || "no especificada"}.
-    Categoría: ${coleccion.categoria || "sin categoría"}.
-  `;
+                Autor: ${coleccion.autor || "desconocido"}.
+                Fecha: ${coleccion.fecha || "no especificada"}.
+                Categoría: ${coleccion.categoria || "sin categoría"}.
+        `;
+        setIsReading(true);
 
-        /*Speech.speak(texto, {
+        Speech.speak(texto, {
             language: "es-ES",
             rate: 1.0,
             pitch: 1.0,
-        });*/
+            onDone: () => setIsReading(false),
+            onStopped: () => setIsReading(false),
+        });
     };
 
     // ⏹️ FUNCIÓN PARA DETENER
     const detenerLectura = () => {
-       // Speech.stop();
-    };
-
-
-
+        Speech.stop();
+        setIsReading(false);
+    };*/
+    /*
     useEffect(() => {
         const cargarDatos = async () => {
             setCargando(true);
-            console.log("holaa detalle:");
+            console.log("holaa detalle:", id);
 
 
 
@@ -92,6 +134,7 @@ export default function DetalleColeccion() {
                 return;
             }
             const query = Array.isArray(id) ? id[0] : id;
+            console.log("holaa detalle:", query);
             const datos = await obtenerDatosColeccion(`listar_Detalle.php?id=${query}`);
 
             setColeccion(datos);
@@ -104,7 +147,7 @@ export default function DetalleColeccion() {
         }
 
 
-    }, [id])
+    }, [id])*/
 
     const renderCaracteristicaTags = () => {
         // Si está cargando, mostramos el indicador
@@ -127,6 +170,32 @@ export default function DetalleColeccion() {
         ));
     };
 
+
+   /* useEffect(() => {
+        const cargarLike = async () => {
+            const UID = user?.uid;
+            const data = await verificarLike(UID, id);
+            setLiked(data.liked);
+        };
+
+        cargarLike();
+    }, [id]);
+
+    const like = async () => {
+        const UID = user?.uid;
+        if (user) {
+            console.log("entro uid, id:", user?.uid, id);
+            const data = await guradarLike(UID, id, !isLiked);
+
+            if (data.success) {
+                setLiked(!isLiked);
+            }
+        } else {
+            alert("Debe iniciar sesion para dar Like")
+        }
+
+    }*/
+
     const Media: MediaItem[] = [{ type: "image", uri: `http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/${coleccion?.nombre_archivo}` }, { type: "video", uri: `http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/video1.mp4` }]
 
     const renderMedia: ListRenderItem<MediaItem> = ({ item }) => (
@@ -138,13 +207,31 @@ export default function DetalleColeccion() {
                     resizeMode="contain"
                 />
             ) : (
-                <Video
-                    source={{ uri: item.uri }}
-                    style={styles.fullMedia}
-                    resizeMode={ResizeMode.CONTAIN}
-                    useNativeControls
-                />
+                <>
+                    <Video
+                        source={{ uri: item.uri }}
+                        style={styles.fullMedia}
+                        resizeMode={ResizeMode.CONTAIN}
+                        useNativeControls
+                    />
+
+                    {premiun && !user && (
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            onPress={() => alert("Contenido disponible solo para usuarios Premium")}
+                            style={styles.bloqueoPremium}
+                        >
+                            <Ionicons name="lock-closed" size={40} color="#fff" />
+                            <Text style={{ color: "#fff", marginTop: 10, fontSize: 18 }}>
+                                Contenido Premium
+                            </Text>
+                        </TouchableOpacity>
+                    )}
+                </>
+
             )}
+
+
         </View>
     );
 
@@ -179,25 +266,13 @@ export default function DetalleColeccion() {
                                     style={styles.imagen}
                                     source={{ uri: `http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/${coleccion?.nombre_archivo}` }}
                                 />
+
                             </TouchableOpacity>
 
 
 
                             <ThemedText style={styles.titulo}>{coleccion?.titulo}</ThemedText>
 
-                            {/* Botones circulares */}
-                            <View style={styles.botonera}>
-                                <TouchableOpacity style={styles.botonCircular} onPress={leerInformacion}>
-                                    <Text style={styles.iconoBoton}>🔈</Text>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    style={[styles.botonCircular, { backgroundColor: "rgba(235, 182, 102, 1)" }]}
-                                    onPress={detenerLectura}
-                                >
-                                    <Text style={styles.iconoBoton}>⏹</Text>
-                                </TouchableOpacity>
-                            </View>
 
 
                             {/* Slider horizontal de infoCards */}
@@ -239,6 +314,35 @@ export default function DetalleColeccion() {
                                 </ThemedView>
 
                             </ScrollView>
+                            <View style={styles.botonesFila}>
+
+                                {/* ❤️ Me gusta */}
+                                <TouchableOpacity onPress={()=>like()} style={styles.botonDelicado}
+                                >
+                                    <Ionicons
+                                        name={isLiked && user ? "heart" : "heart-outline"}
+                                        size={24}
+                                        color={isLiked && user ? "red" : "#fff"}
+                                    />
+                                </TouchableOpacity>
+
+                                {/* 🔊 Botón de audio */}
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        if (reading) detener();
+                                        else leer(coleccion);
+                                    }}
+                                    style={styles.botonDelicado}
+
+                                >
+                                    {reading ? (
+                                        <Entypo name="controller-stop" size={24} color="white" />
+                                    ) : (
+                                        <Feather name="volume-2" size={24} color="white" />
+                                    )}
+                                </TouchableOpacity>
+
+                            </View>
 
                             <ThemedView style={styles.comentarios}>
                                 <ThemedText style={styles.subtitle}>Comentarios:</ThemedText>
@@ -462,5 +566,56 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(0,0,0,0.4)",
     },
 
+    botonUnico: {
+        backgroundColor: "rgba(255, 255, 255, 0.20)",
+        width: 52,
+        height: 52,
+        borderRadius: 26,
+        justifyContent: "center",
+        alignItems: "center",
+        alignSelf: "center",
+        marginBottom: 12,
+        shadowColor: "#000",
+        shadowOpacity: 0.20,
+        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 4 },
+    },
+    botonesFila: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 16,
+        marginVertical: 10,
+    },
+    botonDelicado: {
+        backgroundColor: "rgba(255, 255, 255, 0.16)",
+        padding: 10,
+        borderRadius: 14,
+        justifyContent: "center",
+        alignItems: "center",
+
+        // Sombras suaves premium
+        shadowColor: "#000",
+        shadowOpacity: 0.15,
+        shadowRadius: 6,
+        shadowOffset: { width: 0, height: 3 },
+        elevation: 5,
+
+        borderWidth: 1,
+        borderColor: "rgba(255,255,255,0.25)",
+    },
+    bloqueoPremium: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10,
+    borderRadius: 10,
+}
 
 });
+

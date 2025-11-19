@@ -1,17 +1,23 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import type { User } from "firebase/auth";
+import React from 'react';
+import { auth } from "@/credenciales";
+
 
 type Usuario = {
   nombre: string | null;
   //apellido: string | null;
   //email: string | null;
-  premium: boolean;
+  premiun: boolean;
 };
 
 type UserContextType = {
   usuario: Usuario;
   setUsuario: (user: Usuario) => void;
-  esPremium: boolean;
+  esPremiun: boolean;
   setEsPremium: (value: boolean) => void;
+  cargarUsuario: () => Promise<void>; // Add this line
   //logueado: boolean;
   //setLogueado: (value: boolean) => void;
 };
@@ -23,42 +29,57 @@ export function PremiunProvider({ children }: { children: ReactNode }) {
     nombre: null,
    // apellido: null,
     //email: null,
-    premium: false,
+    premiun: false,
   });
+  const [user, setUser] = useState<User | null>(null);
 
-  const [esPremium, setEsPremium] = useState(false);
+   useEffect(() => {
+  
+          const unsubscribe = onAuthStateChanged(auth, (user) => {
+              setUser(user);
+          });
+  
+  
+          return unsubscribe;
+      }, []);
+  
+  const [esPremiun, setEsPremium] = useState(false);
 
   
-  useEffect(() => {
+  
     const cargarUsuario = async () => {
+     
       try {
-        const res = await fetch("https://tu-api.com/usuario");
+        const res = await fetch(`http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/endpoints/traerUser.php?uidd=${user?.uid}`);
         const data = await res.json();
-
+        
         setUsuario({
           nombre: data.nombre,
           //apellido: data.apellido,
           //email: data.email,
-          premium: data.premium,
+          premiun: data.premiun,
         });
 
         
-        setEsPremium(data.premium);
+        setEsPremium(data.premiun);
       } catch (e) {
         console.log("Usuario no logueado");
       }
     };
+  
 
+  useEffect(() => {
     cargarUsuario();
-  }, []);
+  }, [user]);
 
   return (
     <UsuarioContext.Provider
       value={{
         usuario,
         setUsuario,
-        esPremium,
+        esPremiun,
         setEsPremium,
+        cargarUsuario,
         //logueado,
         //setLogueado,
       }}

@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { Modal, StyleSheet, TouchableOpacity } from "react-native";
+import { Modal, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Colors } from "../../constants/theme";
@@ -18,6 +18,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { signOut } from "firebase/auth";
 import { useContext } from "react";
 import { UsuarioContext } from "../premiunContext";
+import CModal from '@/components/CModel';
+import { actualizarUsuario } from "@/fciones/actualizarUsuario";
+import {useUsuario} from "../../hooks/use-usuario"
+import ConfigModal from "@/components/configModal";
 
 
 export default function Usuario() {
@@ -26,9 +30,9 @@ export default function Usuario() {
     const router = useRouter();
     const [modalVisible, setModalVisible] = useState(false);
     const [modalVisiblePre, setModalVisiblePre] = useState(false);
-    const [user, setUsuario] = useState<User | null>(null);
-    const {usuario, esPremium } = useContext(UsuarioContext) ?? { usuario: null, esPremium: false };
-
+   // const [user, setUsuario] = useState<User | null>(null);
+    const { usuario, esPremiun, cargarUsuario } = useContext(UsuarioContext) ?? { usuario: null, esPremium: false };
+    const { user, cerrarSesion, activarBiometria, desactivarPremiun } = useUsuario({ usuario, esPremiun, cargarUsuario });
     const screenHeight = Dimensions.get('window').height;
     const translateY = useRef(new Animated.Value(screenHeight)).current;
 
@@ -48,15 +52,15 @@ export default function Usuario() {
         }).start();
     };
 
-     useEffect(() => {
-    
-            const unsubscribe = onAuthStateChanged(auth, (user) => {
-                setUsuario(user);
-            });
-    
-    
-            return unsubscribe;
-        }, []);
+   /* useEffect(() => {
+
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setUsuario(user);
+        });
+
+
+        return unsubscribe;
+    }, []);*/
 
 
     /*useEffect(() => {
@@ -83,7 +87,7 @@ export default function Usuario() {
         actPremium();
     }, [esPremiun, usuario]);*/
 
-    const cerrarSesion = async () => {
+   /* const cerrarSesion = async () => {
         try {
             await signOut(auth);
             setUsuario(null);
@@ -93,6 +97,17 @@ export default function Usuario() {
         }
     };
 
+    const desactivarPremiun = async () => {
+        if (esPremiun) {
+            await actualizarUsuario(user, false);
+            if (cargarUsuario) {
+                await cargarUsuario();
+            }
+
+        } else {
+            alert("No eres premiun")
+        }
+    }
     const activarBiometria = async () => {
         if (!user?.uid) {
             alert("Debes iniciar sesión para activar la biometría");
@@ -103,129 +118,144 @@ export default function Usuario() {
             alert("Biometría desactivada");
         } else {
             await AsyncStorage.setItem("biometria_activada", "true");
-            
+
             alert("Biometría activada");
         }
-    };
+    };*/
 
 
     return (
-        <ThemedView style={estilo.p}>
-            <ThemedView style={estilo.header}>
+        <>
 
-                <ThemedView style={estilo.sesion}>
+            <ThemedView style={estilo.p}>
+                <ThemedView style={estilo.header}>
 
-                    {user ? (
-                        <ThemedView style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <ThemedView style={[estilo.circulo, { borderColor: colors.primary }]}>
-                                <Ionicons name="person-circle-sharp" size={24} color={colors.icon} style={estilo.icon} />
+                    <ThemedView style={estilo.sesion}>
+
+                        {user ? (
+                            <ThemedView style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <ThemedView style={[estilo.circulo, { borderColor: colors.primary }]}>
+                                    <Ionicons name="person-circle-sharp" size={24} color={colors.icon} style={estilo.icon} />
+                                </ThemedView>
+                                <TouchableOpacity onPress={() => router.push({
+                                    pathname: "/",
+                                })}>
+                                    <ThemedText style={estilo.texto}>{usuario?.nombre}</ThemedText>
+                                </TouchableOpacity>
                             </ThemedView>
-                            <TouchableOpacity onPress={() => router.push({
-                                pathname: "/",
-                            })}>
-                                <ThemedText type="defaultSemiBold" style={estilo.texto}>Nombre de user</ThemedText>
-                            </TouchableOpacity>
-                        </ThemedView>
-                    ) : (
+                        ) : (
 
-                        <ThemedView style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <ThemedView style={[estilo.circulo, { borderColor: colors.primary }]}>
-                                <Ionicons name="person-circle-sharp" size={24} color={colors.icon} style={estilo.icon} />
+                            <ThemedView style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <ThemedView style={[estilo.circulo, { borderColor: colors.primary }]}>
+                                    <Ionicons name="person-circle-sharp" size={24} color={colors.icon} style={estilo.icon} />
+                                </ThemedView>
+                                <TouchableOpacity onPress={() => router.push({
+                                    pathname: "/Login",
+                                })}>
+                                    <ThemedText style={estilo.texto}>Iniciar sesión</ThemedText>
+                                </TouchableOpacity>
                             </ThemedView>
-                            <TouchableOpacity onPress={() => router.push({
-                                pathname: "/Login",
-                            })}>
-                                <ThemedText style={estilo.texto}>Iniciar sesión</ThemedText>
-                            </TouchableOpacity>
-                        </ThemedView>
-                    )}
+                        )}
 
-                </ThemedView>
-
-                <ThemedView style={estilo.opciones}>
-
-                    {esPremium ? (
-                        <TouchableOpacity onPress={() => setModalVisiblePre(true)}>
-                            <ThemedView style={[estilo.circuloRelleno, { backgroundColor: colors.primary }]} >
-                                <MaterialCommunityIcons name="diamond" size={24} color={colors.icon} style={estilo.icon} />
-                            </ThemedView>
-                        </TouchableOpacity>
-                    ) : (
-                        <TouchableOpacity onPress={() => setModalVisible(true)}>
-                            <ThemedView style={[estilo.circulo, { borderColor: colors.primary }]} >
-                                <MaterialCommunityIcons name="diamond" size={24} color={colors.icon} style={estilo.icon} />
-                            </ThemedView>
-                        </TouchableOpacity>
-                    )}
-
-                    <ThemedView style={[estilo.circulo, { borderColor: colors.primary }]}>
-                        <Ionicons name="share-social-sharp" size={24} color={colors.icon} style={estilo.icon} />
                     </ThemedView>
-                    <TouchableOpacity onPress={openSheet}>
+
+                    <ThemedView style={estilo.opciones}>
+
+                        {esPremiun && user ? (
+                            <TouchableOpacity onPress={() => setModalVisiblePre(true)}>
+                                <ThemedView style={[estilo.circuloRelleno, { backgroundColor: colors.primary }]} >
+                                    <MaterialCommunityIcons name="diamond" size={24} color={colors.icon} style={estilo.icon} />
+                                </ThemedView>
+                            </TouchableOpacity>
+                        ) : (
+                            <TouchableOpacity onPress={() => setModalVisible(true)}>
+                                <ThemedView style={[estilo.circulo, { borderColor: colors.primary }]} >
+                                    <MaterialCommunityIcons name="diamond" size={24} color={colors.icon} style={estilo.icon} />
+                                </ThemedView>
+                            </TouchableOpacity>
+                        )}
+
                         <ThemedView style={[estilo.circulo, { borderColor: colors.primary }]}>
-                            <Ionicons name="settings-sharp" size={24} color={colors.icon} style={estilo.icon} />
+                            <Ionicons name="share-social-sharp" size={24} color={colors.icon} style={estilo.icon} />
                         </ThemedView>
-                    </TouchableOpacity>
+                        <TouchableOpacity onPress={openSheet}>
+                            <ThemedView style={[estilo.circulo, { borderColor: colors.primary }]}>
+                                <Ionicons name="settings-sharp" size={24} color={colors.icon} style={estilo.icon} />
+                            </ThemedView>
+                        </TouchableOpacity>
 
+
+                    </ThemedView>
+
+                </ThemedView>
+                <ThemedView style={[estilo.h, { backgroundColor: colors.superficie }]}>
 
                 </ThemedView>
 
+                <ConfigModal medida= {translateY} user={user} cerrarSesion={cerrarSesion} activarBiometria={()=>activarBiometria} desactivarPremiun={desactivarPremiun} closeSheet={closeSheet} />
+                {/*<Animated.View
+                    style={[
+                        estilo.sheet,
+                        { transform: [{ translateY }] }
+                    ]}
+                >
+                    <ThemedView style={estilo.handle} />
+
+                    <ThemedText style={estilo.sheetTitle}>Configuración</ThemedText>
+
+                    <ThemedView style={estilo.settingsGroup}>
+                        <TouchableOpacity style={estilo.settingsItem}>
+                            <Ionicons name="person-outline" size={22} color={colors.icon} />
+                            <ThemedText style={estilo.settingsText}>Cuenta</ThemedText>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={estilo.settingsItem} onPress={ desactivarPremiun}>
+                            <MaterialCommunityIcons name="diamond" size={24} color={colors.icon} style={estilo.icon} />
+                            <ThemedText style={estilo.settingsText}>Dejar de ser Miembro</ThemedText>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={estilo.settingsItem}>
+                            <Ionicons name="notifications-outline" size={22} color={colors.icon} />
+                            <ThemedText style={estilo.settingsText}>Notificaciones</ThemedText>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={estilo.settingsItem}>
+                            <Ionicons name="shield-checkmark-outline" size={22} color={colors.icon} />
+                            <ThemedText style={estilo.settingsText}>Privacidad</ThemedText>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={estilo.settingsItem} onPress={activarBiometria}>
+                            <Ionicons name="shield-checkmark-outline" size={22} color={colors.icon} />
+                            <ThemedText style={estilo.settingsText}>Activar igreso por Biometria</ThemedText>
+                        </TouchableOpacity>
+
+                        {user ? (
+                            <TouchableOpacity style={estilo.settingsItem} onPress={cerrarSesion}>
+                                <Ionicons name="exit-outline" size={22} color={colors.icon} />
+                                <ThemedText style={estilo.settingsText}>Cerrar Sesion</ThemedText>
+                            </TouchableOpacity>
+
+                        ) : ( 
+                            <View></View>
+                        )}
+
+                    </ThemedView>
+
+
+                    <TouchableOpacity onPress={closeSheet} style={[estilo.closeButton, { backgroundColor: colors.secondary }]}>
+                        <ThemedText style={estilo.closeText}>Cerrar</ThemedText>
+                    </TouchableOpacity>
+
+
+                </Animated.View>*/}
+
+
             </ThemedView>
-            <ThemedView style={[estilo.h, { backgroundColor: colors.superficie }]}>
-
-            </ThemedView>
-            <Animated.View
-                style={[
-                    estilo.sheet,
-                    { transform: [{ translateY }] }
-                ]}
-            >
-                <ThemedView style={estilo.handle} />
-
-                <ThemedText style={estilo.sheetTitle}>Configuración</ThemedText>
-
-                <ThemedView style={estilo.settingsGroup}>
-                    <TouchableOpacity style={estilo.settingsItem}>
-                        <Ionicons name="person-outline" size={22} color={colors.icon} />
-                        <ThemedText style={estilo.settingsText}>Cuenta</ThemedText>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={estilo.settingsItem}>
-                        <MaterialCommunityIcons name="diamond" size={24} color={colors.icon} style={estilo.icon} />
-                        <ThemedText style={estilo.settingsText}>Dejar de ser Miembro</ThemedText>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={estilo.settingsItem}>
-                        <Ionicons name="notifications-outline" size={22} color={colors.icon} />
-                        <ThemedText style={estilo.settingsText}>Notificaciones</ThemedText>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={estilo.settingsItem}>
-                        <Ionicons name="shield-checkmark-outline" size={22} color={colors.icon} />
-                        <ThemedText style={estilo.settingsText}>Privacidad</ThemedText>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={estilo.settingsItem} onPress={activarBiometria}>
-                        <Ionicons name="shield-checkmark-outline" size={22} color={colors.icon} />
-                        <ThemedText style={estilo.settingsText}>Activar igreso por Biometria</ThemedText>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={estilo.settingsItem} onPress={cerrarSesion}>
-                        <Ionicons name="exit-outline" size={22} color={colors.icon} />
-                        <ThemedText style={estilo.settingsText}>Cerrar Sesion</ThemedText>
-                    </TouchableOpacity>
-                </ThemedView>
-
-                <TouchableOpacity onPress={closeSheet} style={[estilo.closeButton, { backgroundColor: colors.secondary }]}>
-                    <ThemedText style={estilo.closeText}>Cerrar</ThemedText>
-                </TouchableOpacity>
-
-
-
-            </Animated.View>
-
-
-        </ThemedView>
+            <CModal
+                visible={modalVisible}
+                cerrarModal={() => setModalVisible(false)}
+            />
+        </>
     )
 }
 
@@ -357,6 +387,6 @@ const estilo = StyleSheet.create({
         fontWeight: '600'
     }
 
-   
+
 
 })

@@ -1,6 +1,6 @@
 import { Text } from "react-native";
 
-const API_URL= 'http://192.168.1.134/App/App-Web/API_Proyecto/endpoints';
+const API_URL= 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/endpoints';
 
 export const obtenerDatosColeccion = async(query: string ) => {
 

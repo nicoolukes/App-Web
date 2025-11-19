@@ -11,7 +11,7 @@ import { ComponentProps } from "react";
 
 
 
-export default function HomeHeader({abrirMenu, abrirBuscador, titulo, icon}: {abrirMenu: () => void, abrirBuscador: () => void, titulo: string, icon: ComponentProps<typeof Ionicons>['name']}) {
+export default function HomeHeader({ titulo}: { titulo: string}) {
     const colorScheme = useColorScheme();
     const volver = useRouter();
     const colors = Colors[colorScheme ?? 'light'];

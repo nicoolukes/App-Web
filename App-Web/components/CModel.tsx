@@ -13,15 +13,15 @@ import { useEffect } from "react";
 import React from 'react';
 import { auth } from "@/credenciales";
 import { actualizarUsuario } from "@/fciones/actualizarUsuario";
+import { useContext } from "react";
+import { UsuarioContext } from "../app/premiunContext";
 
 export default function CModel({ visible, cerrarModal }: { visible: boolean, cerrarModal: ()=> void}) {
     const colorScheme = useColorScheme();
     const colors = Colors[colorScheme ?? 'light'];
     const router = useRouter();
-    
-    
-
     const [usuario, setUsuario] = useState<User | null>(null);
+    const {cargarUsuario } = useContext(UsuarioContext) ?? { usuario: null, esPremium: false };
     
 
     useEffect(() => {
@@ -46,7 +46,11 @@ export default function CModel({ visible, cerrarModal }: { visible: boolean, cer
     }
 
     const activarPremium = () => {
-        actualizarUsuario(usuario);
+        actualizarUsuario(usuario, true);
+        if(cargarUsuario){
+            cargarUsuario();
+        }
+        
         cerrarModal && cerrarModal();
     };
     return (

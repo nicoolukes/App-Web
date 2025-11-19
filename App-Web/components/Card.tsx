@@ -9,7 +9,7 @@ import { useRouter } from "expo-router";
 import DetalleColeccion from "@/app/DetalleColeccion";
 
 const { width: screenWidth } = Dimensions.get('window');
-export default function Card({ image, title, description, width = 0.9, aspectRatio = 16 / 9, id, requierePremiun, esPremium, onPress, abrirModalPremiun}: { image: any, title: string, description: string, width: number, aspectRatio: number, id: number, requierePremiun?: boolean, esPremium?: boolean, onPress?: () => void, abrirModalPremiun?: () => void }) {
+export default function Card({ image, title, description, width = 0.9, aspectRatio = 16 / 9, requierePremiun, esPremium, onPress, abrirModalPremiun}: { image: any, title: string, description: string, width: number, aspectRatio: number,  requierePremiun?: boolean, esPremium?: boolean, onPress?: () => void, abrirModalPremiun?: () => void }) {
     const router = useRouter();
     const cardWidth = screenWidth * width;
 

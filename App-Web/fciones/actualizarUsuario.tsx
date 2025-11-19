@@ -1,6 +1,6 @@
 import { getAuth, User } from "firebase/auth";
 
-export const actualizarUsuario= async(usuario: User | null ) => {
+export const actualizarUsuario= async(usuario: User | null, premiunn: boolean ) => {
     console.log("Legooooooooo")
     try{
         if (!usuario?.uid) return;
@@ -9,7 +9,7 @@ export const actualizarUsuario= async(usuario: User | null ) => {
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({
                         uidd: usuario.uid,
-                        premiun: "1"
+                        premiun: premiunn ? "1":"0"
                     }).toString(),
                 });
                 const data = await respuesta.json();

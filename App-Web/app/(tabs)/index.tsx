@@ -27,8 +27,8 @@ export default function Index() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
 
-  const { usuario, esPremium } = useContext(UsuarioContext) ?? { usuario: null, esPremium: false };
-
+  const { usuario, esPremiun } = useContext(UsuarioContext) ?? { usuario: null, esPremiun: false };
+ console.log("es premiunnnnnn:", esPremiun);
   
 
   return (
@@ -59,32 +59,32 @@ export default function Index() {
             <Categoria
               icono="https://img.icons8.com/glyph-neue/64/dog-bone.png"
               title='Fosiles'
-              categoria="Fosiles"
+              categoria="Fosil"
             />
             <Categoria
               icono="https://img.icons8.com/ios-filled/50/dog-footprint.png"
               title='Mamiferos'
-              categoria="Mamiferos"
+              categoria="Mamifero"
             />
             <Categoria
               icono="https://img.icons8.com/fluency-systems-filled/48/quill-pen.png"
               title='Aves'
-              categoria="Aves"
+              categoria="Ave"
             />
             <Categoria
               icono="https://img.icons8.com/sf-ultralight-filled/50/hammer.png"
               title='Herramientas'
-              categoria="Herramientas"
+              categoria="Herramienta"
             />
             <Categoria
               icono="https://img.icons8.com/ios-filled/50/modern-art.png"
               title='Pinturas Rupestres'
-              categoria="Pinturas Rupestres"
+              categoria="Pinturas Rupestre"
             />
             <Categoria
               icono="https://img.icons8.com/metro/52/ant.png"
               title='Insectos'
-              categoria="Insectos"
+              categoria="Insecto"
             />
             <Categoria
               icono="https://img.icons8.com/forma-thin-filled-sharp/48/lotus--v2.png"
@@ -94,7 +94,7 @@ export default function Index() {
             <Categoria
               icono="https://img.icons8.com/material-rounded/48/particles.png"
               title='Piezas'
-              categoria="Pieszas"
+              categoria="Piesza"
             />
 
 
@@ -115,8 +115,7 @@ export default function Index() {
                   description="Fósil encontrado en la Pampa "
                   width={0.6}
                   aspectRatio={2 / 3}
-                  id={1}
-                  onPress={() => router.push({pathname: '/DetalleColeccion', params: { id: 1 }})}
+                  onPress={() => router.push({ pathname: '/DetalleColeccion', params: { id: 1, premiun: esPremiun ? 1 : 0 } })}
                 />
                 <Card
                   image={{ uri: 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/img2(mano).jpg' }}
@@ -124,7 +123,7 @@ export default function Index() {
                   description="Extremidad de Mamifero prehistorico"
                   width={0.6}
                   aspectRatio={2 / 3}
-                  id={2}
+                  onPress={() => router.push({ pathname: '/DetalleColeccion', params: { id: 2, premiun: esPremiun ? 1 : 0 } })}
                 />
                 <Card
                   image={{ uri: 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/img3(dino).jpg' }}
@@ -132,7 +131,7 @@ export default function Index() {
                   description="Esqueleto completo de dinosaurio  "
                   width={0.6}
                   aspectRatio={2 / 3}
-                  id={3}
+                  onPress={() => router.push({ pathname: '/DetalleColeccion', params: { id: 3, premiun: esPremiun ? 1 : 0 } })}
                 />
                 <Card
                   image={{ uri: 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/img4(piedra).jpg' }}
@@ -140,7 +139,7 @@ export default function Index() {
                   description="Piedra con restos fósiles incrustados"
                   width={0.6}
                   aspectRatio={2 / 3}
-                  id={4}
+                  onPress={() => router.push({ pathname: '/DetalleColeccion', params: { id: 4, premiun: esPremiun ? 1 : 0 } })}
                 />
               </ScrollView>
 
@@ -160,7 +159,7 @@ export default function Index() {
                   description="La mejor fauna"
                   width={0.5}
                   aspectRatio={1}
-                  id={10}
+                  //id={10}
                 />
                 <Card
                   image={{ uri: 'https://i.pinimg.com/1200x/7b/6d/ba/7b6dba82ccba3ba322d1120a8e0177a2.jpg' }}
@@ -168,7 +167,7 @@ export default function Index() {
                   description="La mejor fauna"
                   width={0.5}
                   aspectRatio={1}
-                  id={11}
+                  //id={11}
 
                 />
                 <Card
@@ -177,7 +176,7 @@ export default function Index() {
                   description="La mejor fauna"
                   width={0.5}
                   aspectRatio={1}
-                  id={12}
+                  //id={12}
                 />
                 <Card
                   image={{ uri: 'https://i.pinimg.com/736x/75/73/78/7573783da70edef3fa15c8b746115abd.jpg' }}
@@ -185,7 +184,7 @@ export default function Index() {
                   description="La mejor fauna"
                   width={0.5}
                   aspectRatio={1}
-                  id={13}
+                  //id={13}
                 />
               </ScrollView>
 
@@ -204,8 +203,8 @@ export default function Index() {
                   description="El zorro pampeano ayuda a mantener el equilibrio natural de La Pampa al controlar roedores."
                   width={0.9}
                   aspectRatio={16 / 9}
-                  id={10}
-                  esPremium={esPremium}
+                  //id={10}
+                  esPremium={esPremiun}
                   requierePremiun={true}
                   abrirModalPremiun={() => setModalVisible(true)}
                 />
@@ -215,7 +214,7 @@ export default function Index() {
                   description="El zorro pampeano ayuda a mantener el equilibrio natural de La Pampa al controlar roedores."
                   width={0.9}
                   aspectRatio={16 / 9}
-                  id={11}
+                  //id={11}
 
                 />
                 <Card
@@ -224,7 +223,7 @@ export default function Index() {
                   description="El zorro pampeano ayuda a mantener el equilibrio natural de La Pampa al controlar roedores."
                   width={0.9}
                   aspectRatio={16 / 9}
-                  id={12}
+                  //id={12}
                 />
                 <Card
                   image={{ uri: 'https://i.pinimg.com/736x/75/73/78/7573783da70edef3fa15c8b746115abd.jpg' }}
@@ -232,7 +231,7 @@ export default function Index() {
                   description="El zorro pampeano ayuda a mantener el equilibrio natural de La Pampa al controlar roedores."
                   width={0.9}
                   aspectRatio={16 / 9}
-                  id={13}
+                  //id={13}
                 />
               </ScrollView>
 
