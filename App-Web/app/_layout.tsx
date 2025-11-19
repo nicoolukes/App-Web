@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { PremiunProvider } from './premiunContext';
-
-=======
 // NOTIFICACIONES + QR + TODO INTEGRADO ↓↓↓
 
 import { Stack, useRouter } from 'expo-router';
@@ -24,13 +14,11 @@ import * as Notifications from 'expo-notifications';
 // import * as BarCodeScanner from 'expo-barcode-scanner';
 
 // FONTS Y THEME (lo que ya estaba)
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { MerriweatherSans_400Regular, MerriweatherSans_700Bold } from '@expo-google-fonts/merriweather-sans';
-import { Poppins_400Regular, Poppins_600SemiBold, useFonts } from '@expo-google-fonts/poppins';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-reanimated';
->>>>>>> main
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { PremiunProvider } from './premiunContext';
+
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -66,39 +54,12 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const router = useRouter();
 
-<<<<<<< HEAD
-
-  return (
-    <PremiunProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="auth" options={{ headerShown: false }} />
-          <Stack.Screen name="Login" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="DetalleColeccion" options={{ headerShown: false }} />
-          <Stack.Screen name="resultadosBusqueda" options={{ headerShown: false }} />
-          <Stack.Screen name="colecciones" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </PremiunProvider>
-=======
   // 🔔 Suscripciones a eventos
   const receivedSub = useRef<Notifications.Subscription | null>(null);
   const responseSub = useRef<Notifications.Subscription | null>(null);
 
   // 🟩 Cargar fuentes (lo que ya estaba)
-  const [fontsLoaded] = useFonts({
-    Poppins_400Regular,
-    Poppins_600SemiBold,
-    MerriweatherSans_400Regular,
-    MerriweatherSans_700Bold,
-  });
-
-  useEffect(() => {
-    if (fontsLoaded) SplashScreen.hideAsync();
-  }, [fontsLoaded]);
+  
 
   // 🟩 INICIALIZAR NOTIFICACIONES ACÁ
   useEffect(() => {
@@ -142,12 +103,12 @@ export default function RootLayout() {
     })();
 
     // Listener foreground
-    receivedSub.current = Notifications.addNotificationReceivedListener((notif) => {
+    receivedSub.current = Notifications.addNotificationReceivedListener((notif:any) => {
       console.log("📩 Notificación recibida:", notif);
     });
 
     // Listener cuando el usuario toca la noti
-    responseSub.current = Notifications.addNotificationResponseReceivedListener((resp) => {
+    responseSub.current = Notifications.addNotificationResponseReceivedListener((resp:any) => {
       const data = resp.notification.request.content.data as any;
 
       if (data?.obraId) {
@@ -162,25 +123,43 @@ export default function RootLayout() {
     };
   }, []);
 
-  if (!fontsLoaded) return null;
+  
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    /*<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        {/* Rutas principales */}
+        {/* Rutas principales }
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="DetalleColeccion" options={{ headerShown: false }} />
 
-        {/* 🟩 Nueva ruta del QR */}
+        {/* 🟩 Nueva ruta del QR }
         <Stack.Screen name="qr" options={{ headerShown: true, title: "Escanear QR" }} />
 
-        {/* 🟩 Ruta de testeo de notificaciones */}
+        {/* 🟩 Ruta de testeo de notificaciones }
         <Stack.Screen name="testNoti" options={{ headerShown: true, title: "Probar Notificación" }} />
 
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <StatusBar style="auto" />
-    </ThemeProvider>
->>>>>>> main
+    </ThemeProvider>*/
+    <PremiunProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="auth" options={{ headerShown: false }} />
+          <Stack.Screen name="Login" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="DetalleColeccion" options={{ headerShown: false }} />
+           {/* 🟩 Nueva ruta del QR */}
+        <Stack.Screen name="qr" options={{ headerShown: true, title: "Escanear QR" }} />
+
+        {/* 🟩 Ruta de testeo de notificaciones */}
+        <Stack.Screen name="testNoti" options={{ headerShown: true, title: "Probar Notificación" }} />
+          <Stack.Screen name="resultadosBusqueda" options={{ headerShown: false }} />
+          <Stack.Screen name="colecciones" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </PremiunProvider>
   );
 }

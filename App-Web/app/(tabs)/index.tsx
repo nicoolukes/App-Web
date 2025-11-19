@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 import { Platform, StyleSheet, ScrollView } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -18,7 +17,6 @@ import { useColorScheme } from "../../hooks/use-color-scheme";
 import { TouchableOpacity } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import CModal from '@/components/CModel';
-=======
 import Card from '@/components/Card';
 import HomeHeader from '@/components/HomeHeader';
 import { ThemedText } from '@/components/themed-text';
@@ -35,24 +33,20 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { TouchableOpacity } from "react-native";
 
->>>>>>> main
 
 const Stack = createNativeStackNavigator();
 
 export default function Index() {
   const [menuVisible, setMenuVisible] = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
-<<<<<<< HEAD
   const [modalVisible, setModalVisible] = useState(false);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-=======
   const router = useRouter();
 
-  return (
+  
 
 
->>>>>>> main
 
   const { usuario, esPremiun } = useContext(UsuarioContext) ?? { usuario: null, esPremiun: false };
  console.log("es premiunnnnnn:", esPremiun);
@@ -87,11 +81,6 @@ export default function Index() {
             contentContainerStyle={{
               paddingHorizontal: 8, // espacio lateral
               gap: 8, // separa las tarjetas 
-<<<<<<< HEAD
-
-=======
-              marginBottom: 24
->>>>>>> main
             }}>
             <Categoria
               icono="https://img.icons8.com/material-rounded/96/museum.png"
@@ -158,11 +147,7 @@ export default function Index() {
                   description="Fósil encontrado en la Pampa "
                   width={0.6}
                   aspectRatio={2 / 3}
-<<<<<<< HEAD
                   onPress={() => router.push({ pathname: '/DetalleColeccion', params: { id: 1, premiun: esPremiun ? 1 : 0 } })}
-=======
-                  id={1}
->>>>>>> main
                 />
                 <Card
                   image={{ uri: 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/img2(mano).jpg' }}
@@ -170,11 +155,7 @@ export default function Index() {
                   description="Extremidad de Mamifero prehistorico"
                   width={0.6}
                   aspectRatio={2 / 3}
-<<<<<<< HEAD
                   onPress={() => router.push({ pathname: '/DetalleColeccion', params: { id: 2, premiun: esPremiun ? 1 : 0 } })}
-=======
-                  id={2}
->>>>>>> main
                 />
                 <Card
                   image={{ uri: 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/img3(dino).jpg' }}
@@ -182,11 +163,7 @@ export default function Index() {
                   description="Esqueleto completo de dinosaurio  "
                   width={0.6}
                   aspectRatio={2 / 3}
-<<<<<<< HEAD
                   onPress={() => router.push({ pathname: '/DetalleColeccion', params: { id: 3, premiun: esPremiun ? 1 : 0 } })}
-=======
-                  id={3}
->>>>>>> main
                 />
                 <Card
                   image={{ uri: 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/img4(piedra).jpg' }}
@@ -194,11 +171,7 @@ export default function Index() {
                   description="Piedra con restos fósiles incrustados"
                   width={0.6}
                   aspectRatio={2 / 3}
-<<<<<<< HEAD
                   onPress={() => router.push({ pathname: '/DetalleColeccion', params: { id: 4, premiun: esPremiun ? 1 : 0 } })}
-=======
-                  id={4}
->>>>>>> main
                 />
               </ScrollView>
 
@@ -218,11 +191,7 @@ export default function Index() {
                   description="La mejor fauna"
                   width={0.5}
                   aspectRatio={1}
-<<<<<<< HEAD
                   //id={10}
-=======
-                  id={10}
->>>>>>> main
                 />
                 <Card
                   image={{ uri: 'https://i.pinimg.com/1200x/7b/6d/ba/7b6dba82ccba3ba322d1120a8e0177a2.jpg' }}
@@ -230,11 +199,7 @@ export default function Index() {
                   description="La mejor fauna"
                   width={0.5}
                   aspectRatio={1}
-<<<<<<< HEAD
                   //id={11}
-=======
-                  id={11}
->>>>>>> main
 
                 />
                 <Card
@@ -243,11 +208,7 @@ export default function Index() {
                   description="La mejor fauna"
                   width={0.5}
                   aspectRatio={1}
-<<<<<<< HEAD
                   //id={12}
-=======
-                  id={12}
->>>>>>> main
                 />
                 <Card
                   image={{ uri: 'https://i.pinimg.com/736x/75/73/78/7573783da70edef3fa15c8b746115abd.jpg' }}
@@ -255,11 +216,7 @@ export default function Index() {
                   description="La mejor fauna"
                   width={0.5}
                   aspectRatio={1}
-<<<<<<< HEAD
                   //id={13}
-=======
-                  id={13}
->>>>>>> main
                 />
               </ScrollView>
 
@@ -365,7 +322,6 @@ const estilo = StyleSheet.create({
 
 
   },
-<<<<<<< HEAD
   p: {
     flex: 1,
     paddingTop: 32,
@@ -503,7 +459,6 @@ const estilo = StyleSheet.create({
     fontSize: 17,
     fontWeight: '600'
   }
-=======
 
   botonQr: {
     flexDirection: "row",
@@ -527,7 +482,6 @@ const estilo = StyleSheet.create({
     fontSize: 17,
     fontWeight: "600"
   },
->>>>>>> main
 
 
 
