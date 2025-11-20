@@ -14,7 +14,7 @@ Notifications.setNotificationHandler({
 });
 
 
-export async function registerForPushNotificationsAsync() {
+/*export async function registerForPushNotificationsAsync() {
   // Canal Android (requerido para mostrar notis)
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('default', {
@@ -38,4 +38,4 @@ export async function registerForPushNotificationsAsync() {
   // Recomendado: usar un **development build** o build real para obtener token.
   const token = (await Notifications.getExpoPushTokenAsync()).data;
   return token; // ej: ExponentPushToken[xxxxxxxxxxxxxx]
-}
+}*/

@@ -3,13 +3,17 @@ import { TouchableOpacity } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { ThemedText } from "./themed-text"
 import { useRouter } from "expo-router"
+import { Colors } from "../constants/theme";
+import { useColorScheme } from "../hooks/use-color-scheme";
 
-export default function Header() {
+export default function Header({ title }: { title: string }) {
     const router = useRouter();
+    const colorScheme = useColorScheme();
+    const colors = Colors[colorScheme ?? 'light'];
 
     return (
         <ThemedView>
-            {/* Header personalizado */}
+            
             <ThemedView
                 style={{
                     position: 'absolute',
@@ -21,20 +25,26 @@ export default function Header() {
                     alignItems: 'center',
                     paddingHorizontal: 16,
                     paddingVertical: 40,
-                    backgroundColor: 'transparent', // sin fondo
+                    backgroundColor: 'transparent', 
+                    
                 }}
             >
                 <TouchableOpacity onPress={() => router.back()} style={{
-                    backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
                     borderRadius: 50,
                     padding: 6,
                     marginTop: 16,
-                    elevation: 50
                 }}>
-                    <Ionicons name="arrow-back" size={24} color="#d3d3d3ff" />
+                    <Ionicons name="arrow-back" size={24} color={colors.icon} />
                 </TouchableOpacity>
-                <ThemedText style={{ fontSize: 18, fontWeight: "bold", marginLeft: 12, marginTop: 16 }}>
-                    Detalle de la colección
+                <ThemedText style={{
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    marginLeft: 12,
+                    marginTop: 16,
+                    
+                }}>
+                    {title}
                 </ThemedText>
             </ThemedView>
         </ThemedView>

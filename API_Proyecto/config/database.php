@@ -2,7 +2,7 @@
 $host = "localhost";
 $user = "root";
 $pass = "";
-$db = "museodb1";
+$db = "museodb";
 
 $conn = new mysqli($host, $user, $pass, $db);
 

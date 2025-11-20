@@ -1,12 +1,13 @@
 import { Text } from "react-native";
+import {API_URL} from "../src/config/config"
 
-const API_URL= 'http://192.168.1.134/App/App-Web/API_Proyecto/endpoints';
+//const API_URL= 'http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/endpoints';
 
 export const obtenerDatosColeccion = async(query: string ) => {
 
    try{
         
-        const respuesta = await fetch (`${API_URL}/${query}`);
+        const respuesta = await fetch (`${API_URL}/endpoints/${query}`);
         
         if(!respuesta.ok){
             throw new Error(`Error HHTP: ${respuesta.status}`)

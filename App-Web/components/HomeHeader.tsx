@@ -11,10 +11,8 @@ import { ComponentProps } from "react";
 
 
 
-export default function HomeHeader({abrirMenu, abrirBuscador, titulo, icon}: {abrirMenu: () => void, abrirBuscador: () => void, titulo: string, icon: ComponentProps<typeof Ionicons>['name']}) {
-    const colorScheme = useColorScheme();
-    const volver = useRouter();
-    const colors = Colors[colorScheme ?? 'light'];
+export default function HomeHeader({ titulo}: { titulo: string}) {
+   
     return (
         <ThemedView style={estilo.contenedor}>
             

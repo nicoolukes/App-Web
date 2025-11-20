@@ -12,11 +12,11 @@ export default function CampoInput({ icon, placeholder, placeholderTextColor, la
     const colors = Colors[colorScheme ?? 'light'];
     return(
         
-        <ThemedView style={[estilo.contenedorIputs, /*{ backgroundColor: colors.superficie }*/]} >
-            <ThemedText style={[estilo.label, /*{ backgroundColor: colors.superficie }*/]}> {label} </ThemedText>
+        <ThemedView style={[estilo.contenedorIputs,]} >
+            <ThemedText style={[estilo.label,]}> {label} </ThemedText>
             <ThemedView style={[estilo.inputContainer, {borderColor: colors.bordes}] }>
                 {icon && <Ionicons name={icon} size={20} color={colors.icon} style={estilo.icono} />}
-                <TextInput style={[estilo.input, ]}
+                <TextInput style={[estilo.input, {color:colors.text} ]}
                     placeholder={placeholder}
                     placeholderTextColor={placeholderTextColor}
                     value={value}
@@ -58,17 +58,6 @@ const estilo= StyleSheet.create({
         flex: 1,
         height: 50,
         fontSize: 14,
-        
-       
-
-
-        /*height: 50,
-        borderWidth: 1,
-        borderColor: '#bbbbbbff', // Borde gris claro por defecto
-        borderRadius: 16,
-        paddingHorizontal: 16,
-        fontSize: 14,
-        backgroundColor: '#fff',*/
         
     },
     

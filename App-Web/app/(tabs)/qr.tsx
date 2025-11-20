@@ -2,14 +2,17 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import ScannerFrame from '../components/ScannerFrame';
-import { parseObraIdFromQr } from '../src/utils/validateQr';
+import ScannerFrame from '../../components/ScannerFrame';
+import { parseObraIdFromQr } from '../../src/utils/validateQr';
+import { useContext } from "react";
+import { UsuarioContext } from "../../context/premiunContext";
 
 export default function QRScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const router = useRouter();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+   const {esPremiun} = useContext(UsuarioContext) ?? { usuario: null, esPremium: false };
 
   useEffect(() => {
     // Pedir permiso si todavía no se pidió
@@ -21,7 +24,7 @@ export default function QRScreen() {
     timerRef.current = setTimeout(() => {
       if (!scanned) {
         Alert.alert('Aviso', 'No se pudo leer el QR en 1 minuto.');
-        router.back();
+        router.push("/");
       }
     }, 60_000);
 
@@ -33,13 +36,14 @@ export default function QRScreen() {
 
   const onBarcodeScanned = ({ data }: { data: string }) => {
     if (scanned) return;
+    //console.log("la data es:", data);
     const obraId = parseObraIdFromQr(data);
     if (!obraId) {
       Alert.alert('QR inválido', 'El código no pertenece al formato esperado.');
       return;
     }
     setScanned(true);
-    router.push(`/obra/${obraId}`);
+    router.push({ pathname: '/DetalleColeccion', params: { id: 1, premiun: esPremiun ? 1 : 0 } });
   };
 
   if (!permission) {
