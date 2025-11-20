@@ -1,10 +1,11 @@
 import { getAuth, User } from "firebase/auth";
+import {API_URL} from "../src/config/config"
 
 export const actualizarUsuario= async(usuario: User | null, premiunn: boolean ) => {
     console.log("Legooooooooo")
     try{
         if (!usuario?.uid) return;
-        const respuesta = await fetch("http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/endpoints/actualizarUsuario.php?", {
+        const respuesta = await fetch(`${API_URL}/endpoints/actualizarUsuario.php?`, {
                     method: "POST",
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({

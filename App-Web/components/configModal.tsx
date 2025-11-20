@@ -1,6 +1,6 @@
 import { ThemedView } from "./themed-view"
 import { ThemedText } from "./themed-text"
-import { View } from "react-native"
+import { View, Text } from "react-native"
 import { TouchableOpacity } from "react-native"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { Animated } from "react-native"
@@ -13,44 +13,43 @@ export default function ConfigModal({medida, user, desactivarPremiun, activarBio
     const colorScheme = useColorScheme();
     const colors = Colors[colorScheme ?? 'light'];
     return(
+        
          <Animated.View
-                    style={[
-                        estilo.sheet,
-                        { transform: [{ translateY: medida }] }
-                    ]}
+                    style={[estilo.sheet,{ transform: [{ translateY: medida },]}, {backgroundColor: colors.background}]}
                 >
+                    <ThemedView>
                     <ThemedView style={estilo.handle} />
 
                     <ThemedText style={estilo.sheetTitle}>Configuración</ThemedText>
 
                     <ThemedView style={estilo.settingsGroup}>
-                        <TouchableOpacity style={estilo.settingsItem}>
+                        <TouchableOpacity style={[estilo.settingsItem, {borderBottomColor: colors.bordes}]}>
                             <Ionicons name="person-outline" size={22} color={colors.icon} />
                             <ThemedText style={estilo.settingsText}>Cuenta</ThemedText>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={estilo.settingsItem} onPress={ desactivarPremiun}>
+                        <TouchableOpacity style={[estilo.settingsItem, {borderBottomColor: colors.bordes}]} onPress={ desactivarPremiun}>
                             <MaterialCommunityIcons name="diamond" size={24} color={colors.icon} />
                             <ThemedText style={estilo.settingsText}>Dejar de ser Miembro</ThemedText>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={estilo.settingsItem}>
+                        <TouchableOpacity style={[estilo.settingsItem, {borderBottomColor: colors.bordes}]}>
                             <Ionicons name="notifications-outline" size={22} color={colors.icon} />
                             <ThemedText style={estilo.settingsText}>Notificaciones</ThemedText>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={estilo.settingsItem}>
+                        <TouchableOpacity style={[estilo.settingsItem, {borderBottomColor: colors.bordes}]}>
                             <Ionicons name="shield-checkmark-outline" size={22} color={colors.icon} />
                             <ThemedText style={estilo.settingsText}>Privacidad</ThemedText>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={estilo.settingsItem} onPress={activarBiometria}>
+                        <TouchableOpacity style={[estilo.settingsItem, {borderBottomColor: colors.bordes}]} onPress={activarBiometria}>
                             <Ionicons name="shield-checkmark-outline" size={22} color={colors.icon} />
                             <ThemedText style={estilo.settingsText}>Activar igreso por Biometria</ThemedText>
                         </TouchableOpacity>
 
                         {user ? (
-                            <TouchableOpacity style={estilo.settingsItem} onPress={cerrarSesion}>
+                            <TouchableOpacity style={[estilo.settingsItem, {borderBottomColor: colors.bordes}]} onPress={cerrarSesion}>
                                 <Ionicons name="exit-outline" size={22} color={colors.icon} />
                                 <ThemedText style={estilo.settingsText}>Cerrar Sesion</ThemedText>
                             </TouchableOpacity>
@@ -63,11 +62,12 @@ export default function ConfigModal({medida, user, desactivarPremiun, activarBio
 
 
                     <TouchableOpacity onPress={closeSheet} style={[estilo.closeButton, { backgroundColor: colors.secondary }]}>
-                        <ThemedText style={estilo.closeText}>Cerrar</ThemedText>
+                        <Text style={estilo.closeText}>Cerrar</Text>
                     </TouchableOpacity>
 
-
+                </ThemedView>
                 </Animated.View>
+               
     )
 
     
@@ -98,14 +98,14 @@ const estilo = StyleSheet.create({
 
     sheetTitle: {
         fontSize: 22,
-        color: '#fff',
+        
         fontWeight: '700',
         marginBottom: 20,
         textAlign: 'center'
     },
 
     settingsGroup: {
-        backgroundColor: '#2E2E2E',
+        //backgroundColor: '#2E2E2E',
         borderRadius: 18,
         paddingVertical: 6,
         overflow: 'hidden',
@@ -125,7 +125,7 @@ const estilo = StyleSheet.create({
     settingsText: {
         fontSize: 17,
         marginLeft: 14,
-        color: '#fff'
+        //color: '#fff'
     },
 
     closeButton: {
@@ -137,7 +137,8 @@ const estilo = StyleSheet.create({
 
     closeText: {
         fontSize: 17,
-        fontWeight: '600'
+        fontWeight: '600',
+        color:"white"
     }
 
 })

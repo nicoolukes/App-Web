@@ -7,12 +7,12 @@ export function useAuthUser() {
     const [user, setUsuario] = useState<User | null>(null);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        const dejarDeEscuchar = onAuthStateChanged(auth, (user) => {
             setUsuario(user);
         });
-        return unsubscribe;
+        return dejarDeEscuchar;
     }, []);
-
+//console.log("USUARIOO:", user)
 
     return user;
 }

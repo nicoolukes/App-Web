@@ -1,5 +1,5 @@
 // src/services/api.ts
-const BASE_URL = 'https://TU-SERVIDOR/api'; // <-- ajustá esto cuando tengas backend
+const BASE_URL = 'https://'; 
 
 export async function getObraById(obraId: string) {
 

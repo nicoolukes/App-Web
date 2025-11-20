@@ -7,6 +7,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme.web';
 import { Colors } from '@/constants/theme';
 import { useRouter } from 'expo-router';
 import Header from '@/components/Header';
+import { API_URL } from '@/src/config/config';
 
 interface ResultadoBusqueda {
   id: number;
@@ -16,7 +17,6 @@ interface ResultadoBusqueda {
 export default function BuscarScreen() {
   const [texto, setTexto] = useState('');
   const [resultados, setResultados] = useState<ResultadoBusqueda[]>([]);
-  const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const router = useRouter();
@@ -29,7 +29,7 @@ export default function BuscarScreen() {
       } else {
         setResultados([]);
       }
-    }, 400);
+    }, 200);
 
     return () => clearTimeout(delay);
   }, [texto]);
@@ -38,11 +38,11 @@ export default function BuscarScreen() {
 
     try {
 
-      const response = await fetch(`http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/endpoints/listar_img.php?query=${query}`);
+      const response = await fetch(`${API_URL}/endpoints/listar_img.php`);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const datos = await response.json();
 
-      const filtrados = datos.filter((item: any) =>
+      const filtrados =datos.filter((item: any) =>
         item.titulo.toLowerCase().includes(query.toLowerCase())
       );
       setResultados(filtrados);
@@ -62,7 +62,7 @@ export default function BuscarScreen() {
   };
 
   const renderItem = ({ item }: { item: ResultadoBusqueda }) => (
-    <TouchableOpacity onPress={() => irADetalle(item)} style={estilo.itemContainer}>
+    <TouchableOpacity onPress={() => irADetalle(item)} style={[estilo.itemContainer, {borderBottomColor: colors.bordes}]}>
       <ThemedText style={estilo.itemText}>{item.titulo}</ThemedText>
     </TouchableOpacity>
   );
@@ -71,14 +71,14 @@ export default function BuscarScreen() {
     <ThemedView style={estilo.pantalla}>
       <Header title="Buscar en el museo" />
 
-      <ThemedView style={estilo.contenido}>
+      <ThemedView  style={estilo.contenido}>
         <TextInput
           autoFocus
           placeholder="Buscá en el museo..."
           placeholderTextColor="#B3ADA3"
           value={texto}
           onChangeText={setTexto}
-          style={[estilo.input, { color: colors.text }]}
+          style={[estilo.input, { color: colors.text, backgroundColor:colors.superficie }]}
         />
 
         <FlatList
@@ -90,7 +90,7 @@ export default function BuscarScreen() {
           }
           ListEmptyComponent={
             texto.trim().length > 0 && resultados.length === 0 ? (
-              <ThemedText style={estilo.emptyText}>
+              <ThemedText style={[estilo.emptyText, {color: colors.text}]}>
                 No se encontraron resultados.
               </ThemedText>
             ) : null
@@ -113,22 +113,22 @@ const estilo = StyleSheet.create({
   }, 
   input: {
     height: 56,
-    borderColor: '#555',
-    borderWidth: 1.5,
+    //borderColor: '#555',
+    //borderWidth: 1.5,
     borderRadius: 28,
     paddingHorizontal: 16,
     color: 'white',
     marginBottom: 16,
-    backgroundColor: '#1E1E1E', // más contraste con el fondo
+    //backgroundColor: '#1E1E1E', // más contraste con el fondo
   },
   itemContainer: {
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    //borderBottomColor: '#e21414ff',
   },
   itemText: {
     fontSize: 16,
-    color: '#fff',
+    //color: '#fff',
   },
   emptyText: {
     marginTop: 32,

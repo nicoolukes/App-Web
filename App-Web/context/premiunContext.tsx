@@ -3,6 +3,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import type { User } from "firebase/auth";
 import React from 'react';
 import { auth } from "@/credenciales";
+import { API_URL } from "@/src/config/config";
 
 
 type Usuario = {
@@ -17,14 +18,15 @@ type UserContextType = {
   setUsuario: (user: Usuario) => void;
   esPremiun: boolean;
   setEsPremium: (value: boolean) => void;
-  cargarUsuario: () => Promise<void>; // Add this line
+  cargarUsuario: () => Promise<void>; 
   //logueado: boolean;
   //setLogueado: (value: boolean) => void;
 };
 
 export const UsuarioContext = createContext<UserContextType | undefined>(undefined);
 
-export function PremiunProvider({ children }: { children: ReactNode }) {
+export default function PremiunProvider({ children }: { children: ReactNode }) {
+  const [esPremiun, setEsPremium] = useState(false);
   const [usuario, setUsuario] = useState<Usuario>({
     nombre: null,
    // apellido: null,
@@ -39,18 +41,13 @@ export function PremiunProvider({ children }: { children: ReactNode }) {
               setUser(user);
           });
   
-  
           return unsubscribe;
       }, []);
-  
-  const [esPremiun, setEsPremium] = useState(false);
-
-  
   
     const cargarUsuario = async () => {
      
       try {
-        const res = await fetch(`http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/endpoints/traerUser.php?uidd=${user?.uid}`);
+        const res = await fetch(`${API_URL}/endpoints/traerUser.php?uidd=${user?.uid}`);
         const data = await res.json();
         
         setUsuario({

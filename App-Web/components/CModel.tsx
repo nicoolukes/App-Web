@@ -14,7 +14,7 @@ import React from 'react';
 import { auth } from "@/credenciales";
 import { actualizarUsuario } from "@/fciones/actualizarUsuario";
 import { useContext } from "react";
-import { UsuarioContext } from "../app/premiunContext";
+import { UsuarioContext } from "../context/premiunContext";
 
 export default function CModel({ visible, cerrarModal }: { visible: boolean, cerrarModal: ()=> void}) {
     const colorScheme = useColorScheme();
@@ -41,7 +41,7 @@ export default function CModel({ visible, cerrarModal }: { visible: boolean, cer
             router.push("/Login");
             return;
         }
-        console.log("No entrooo");
+        //onsole.log("No entrooo");
         activarPremium();
     }
 

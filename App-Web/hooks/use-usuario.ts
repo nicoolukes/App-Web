@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { signOut } from "firebase/auth";
 import { auth } from "../credenciales";
@@ -19,6 +19,7 @@ export function useUsuario(usuarioContext: any) {
 
   const cerrarSesion = async () => {
     await signOut(auth);
+    await AsyncStorage.setItem("logueo", "false")
     setUsuario(null);
   };
   
@@ -27,6 +28,8 @@ export function useUsuario(usuarioContext: any) {
     if (!user?.uid) return;
     const active = await AsyncStorage.getItem("biometria_activada") === "true";
     await AsyncStorage.setItem("biometria_activada", active ? "false" : "true");
+    await AsyncStorage.setItem("logueo", "true");
+    //console.log("la niometria es: ", active)
   };
 
   const desactivarPremiun = async () => {

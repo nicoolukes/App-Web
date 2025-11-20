@@ -12,9 +12,7 @@ import { ComponentProps } from "react";
 
 
 export default function HomeHeader({ titulo}: { titulo: string}) {
-    const colorScheme = useColorScheme();
-    const volver = useRouter();
-    const colors = Colors[colorScheme ?? 'light'];
+   
     return (
         <ThemedView style={estilo.contenedor}>
             

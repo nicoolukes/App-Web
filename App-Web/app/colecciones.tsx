@@ -4,35 +4,39 @@ import { useColorScheme } from "@/hooks/use-color-scheme.web";
 import { Colors } from "@/constants/theme";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import Card from "@/components/Card";
 import { FlatList, ActivityIndicator, StyleSheet } from "react-native";
 import { ThemedText } from "@/components/themed-text";
 import CardCollec from "@/components/CardCollec";
+import { API_URL } from "@/src/config/config";
 
 
 export default function ColeccionScreen() {
     const colorScheme = useColorScheme();
     const colors = Colors[colorScheme ?? 'light'];
     const { categoria } = useLocalSearchParams();
-    console.log("la categoria es:", categoria);
-
     const [datos, setDatos] = useState<any[]>([]);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    //console.log("la categoria es:", categoria);
+    
 
     useEffect(() => {
         const fetchDatos = async () => {
             try {
+                let respuesta;
                 setCargando(true);
                 setError(null);
 
-
-                const respuesta = await fetch(`http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/endpoints/listar_img.php?categoria=${categoria}`);
+                if(categoria=== "Todo"){
+                    respuesta = await fetch(`${API_URL}/endpoints/listar_img.php`);
+                }else{
+                    respuesta = await fetch(`${API_URL}/endpoints/listar_img.php?categoria=${categoria}`);
+                }
 
                 if (!respuesta.ok) throw new Error('Error al obtener los datos');
 
                 const data = await respuesta.json();
-                console.log("Datos obtenidos:", data);
+                //console.log("Datos obtenidos:", data);
                 setDatos(data);
             } catch (err: any) {
                 setError(err.message);
@@ -46,11 +50,10 @@ export default function ColeccionScreen() {
 
     const renderCards = ({ item }: any) => (
         <CardCollec
-            image={`http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/${item.nombre_archivo}`}
+            image={`${API_URL}/uploads/${item.nombre_archivo}`}
             title={item.titulo}
             id={item.id}
             description=""
-            
             
         />
     );
@@ -66,13 +69,13 @@ export default function ColeccionScreen() {
                     style={{ marginTop: 124 }}
                 />
             ) : error ? (
-                <ThemedText style={{ color: 'red', textAlign: 'center', marginTop: 20 }}>
+                <ThemedText style={estilos.error}>
                     {error}
                 </ThemedText>
             ) : (
                 <FlatList
                     data={datos}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item,index) => index.toString()}
                     renderItem={renderCards}
                     numColumns={2}
                     columnWrapperStyle={{ justifyContent: 'space-between' }}
@@ -93,7 +96,11 @@ const estilos = StyleSheet.create({
         padding: 16,
         paddingTop: 100,
         gap: 16,
-
-
-    }
+    },
+    error:{
+        color: 'red', 
+        textAlign: 'center',
+         marginTop: 20 
+        }
+    
 });

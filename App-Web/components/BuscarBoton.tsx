@@ -1,4 +1,3 @@
-import { useNavigation } from "expo-router";
 import { ThemedView } from "./themed-view";
 import { ThemedText} from "./themed-text";
 import { TouchableOpacity, StyleSheet } from "react-native";

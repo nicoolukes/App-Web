@@ -1,25 +1,26 @@
 import { ImageBackground } from "expo-image";
-import { ThemedView } from "./themed-view";
-import LoginScreen from "@/app/Login";
 import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedText } from "./themed-text";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Dimensions } from "react-native";
-import { useRouter } from "expo-router";
-import DetalleColeccion from "@/app/DetalleColeccion";
+import { useAuthUser } from "@/hooks/use-auth";
+
 
 const { width: screenWidth } = Dimensions.get('window');
 export default function Card({ image, title, description, width = 0.9, aspectRatio = 16 / 9, requierePremiun, esPremium, onPress, abrirModalPremiun}: { image: any, title: string, description: string, width: number, aspectRatio: number,  requierePremiun?: boolean, esPremium?: boolean, onPress?: () => void, abrirModalPremiun?: () => void }) {
-    const router = useRouter();
     const cardWidth = screenWidth * width;
-
     const puedePresionar = !requierePremiun || esPremium;
+    const user = useAuthUser();
 
     const presionarCard = () => {
+       
         if (!puedePresionar) {
             abrirModalPremiun && abrirModalPremiun();
         }else{
             onPress && onPress();
+            if(!user){
+                abrirModalPremiun && abrirModalPremiun();
+            }
         }
     }
     
@@ -71,8 +72,6 @@ const estilo = StyleSheet.create({
         padding: 12,
         borderBottomLeftRadius: 16,
         borderBottomRightRadius: 16,
-
-
     },
 
     text: {

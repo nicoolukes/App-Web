@@ -26,6 +26,9 @@ import { useAuthUser } from "../hooks/use-auth";
 import { useLike } from "../hooks/use-like";
 import { useSpeech } from "../hooks/use-speech"
 import generarTexto from "@/fciones/generarTexto";
+import { API_URL } from "../src/config/config"
+import BuscadorBoton from "@/components/BuscarBoton";
+import { useComentario } from "@/hooks/use-comentario";
 
 
 
@@ -39,115 +42,21 @@ const HEIGHT = Dimensions.get("window").height;
 
 
 export default function DetalleColeccion() {
-    type Coleccion = {
-        caracteristica: string | string[];
-        titulo: string;
-        descripcion: string;
-        nombre_archivo?: string;
-        autor?: string;
-        fecha?: string;
-        categoria?: string;
 
-
-    };
     type Comentario = {
         usuario: string;
         texto: string;
     };
-
-   //const [isLiked, setLiked] = useState(false);
-    //const [isReading, setIsReading] = useState(false);
-    //const { id } = useLocalSearchParams()
-    //const { premiun } = useLocalSearchParams()
-    //const [coleccion, setColeccion] = useState<Coleccion | null>(null);
     const [cargando, setCargando] = useState(false);
     const [modalVisible, setVisibleModal] = useState(false);
     const [comentarios, setComentarios] = useState<Comentario[]>([]);
-    //const [user, setUsuario] = useState<User | null>(null);
-
     const { id, premiun } = useLocalSearchParams();
     const { coleccion, loading } = useDetalleColeccion(id);
     const user = useAuthUser();
     const { isLiked, like } = useLike(user, id);
     const { reading, leer, detener } = useSpeech();
-
-   
-
-    console.log("es premiunn:", premiun);
-    
-
-
-   /* useEffect(() => {
-
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUsuario(user);
-        });
-
-
-        return unsubscribe;
-    }, []);*/
-
-    // FUNCIÓN PARA LEER: en voz alta 
-   /* const leerInformacion = () => {
-        if (!coleccion) return;
-
-       texto = generarTexto(coleccion);
-        /*const texto = `
-                Título: ${coleccion.titulo || "sin título"}.
-                Descripción: ${coleccion.descripcion || "sin descripción"}.
-                Características: ${Array.isArray(coleccion.caracteristica)
-                ? coleccion.caracteristica.join(", ")
-                : coleccion.caracteristica
-            }.
-                Autor: ${coleccion.autor || "desconocido"}.
-                Fecha: ${coleccion.fecha || "no especificada"}.
-                Categoría: ${coleccion.categoria || "sin categoría"}.
-        `;
-        setIsReading(true);
-
-        Speech.speak(texto, {
-            language: "es-ES",
-            rate: 1.0,
-            pitch: 1.0,
-            onDone: () => setIsReading(false),
-            onStopped: () => setIsReading(false),
-        });
-    };
-
-    // ⏹️ FUNCIÓN PARA DETENER
-    const detenerLectura = () => {
-        Speech.stop();
-        setIsReading(false);
-    };*/
-    /*
-    useEffect(() => {
-        const cargarDatos = async () => {
-            setCargando(true);
-            console.log("holaa detalle:", id);
-
-
-
-            // Si no hay nombre válido, evitamos la petición
-            if (!id) {
-                setColeccion(null);
-                setCargando(false);
-                return;
-            }
-            const query = Array.isArray(id) ? id[0] : id;
-            console.log("holaa detalle:", query);
-            const datos = await obtenerDatosColeccion(`listar_Detalle.php?id=${query}`);
-
-            setColeccion(datos);
-
-            setCargando(false);
-            console.log("Archivo recibido:", coleccion?.nombre_archivo);
-        };
-        if (id) {
-            cargarDatos();
-        }
-
-
-    }, [id])*/
+    const {comentario} = useComentario(user, id);
+    //console.log("es premiunn:", premiun);
 
     const renderCaracteristicaTags = () => {
         // Si está cargando, mostramos el indicador
@@ -156,7 +65,7 @@ export default function DetalleColeccion() {
         }
 
         if (!coleccion?.caracteristica) {
-            return <ThemedText >No se encontraron características.</ThemedText>;
+            return <ThemedText style={styles.texto} >No se encontraron características.</ThemedText>;
         }
 
         const caracteristicasArray = Array.isArray(coleccion.caracteristica)
@@ -164,39 +73,13 @@ export default function DetalleColeccion() {
             : coleccion.caracteristica.split(',');
 
         return caracteristicasArray.map((c, index) => (
-            <View key={index} >
-                <Text >{c.trim()}</Text>
+            <View style={styles.cajita} key={index} >
+                <Text style={styles.texto} >{c.trim()}</Text>
             </View>
         ));
     };
 
-
-   /* useEffect(() => {
-        const cargarLike = async () => {
-            const UID = user?.uid;
-            const data = await verificarLike(UID, id);
-            setLiked(data.liked);
-        };
-
-        cargarLike();
-    }, [id]);
-
-    const like = async () => {
-        const UID = user?.uid;
-        if (user) {
-            console.log("entro uid, id:", user?.uid, id);
-            const data = await guradarLike(UID, id, !isLiked);
-
-            if (data.success) {
-                setLiked(!isLiked);
-            }
-        } else {
-            alert("Debe iniciar sesion para dar Like")
-        }
-
-    }*/
-
-    const Media: MediaItem[] = [{ type: "image", uri: `http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/${coleccion?.nombre_archivo}` }, { type: "video", uri: `http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/video1.mp4` }]
+    const Media: MediaItem[] = [{ type: "image", uri: `${API_URL}/uploads/${coleccion?.nombre_archivo}` }, { type: "video", uri: `${API_URL}/uploads/video1.mp4` }]
 
     const renderMedia: ListRenderItem<MediaItem> = ({ item }) => (
         <View style={styles.page}>
@@ -237,15 +120,13 @@ export default function DetalleColeccion() {
 
 
     return (
-
         <>
-
             <ThemedView style={styles.container}>
 
                 <ImageBackground
-                    source={{ uri: `http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/${coleccion?.nombre_archivo}` }}
+                    source={{ uri: `${API_URL}/uploads/${coleccion?.nombre_archivo}` }}
                     style={styles.background}
-                    blurRadius={10} // si no usás expo-blur
+                    blurRadius={10}
                 >
                     <LinearGradient
                         colors={['rgba(0, 0, 0, 0.03)', 'rgba(0, 0, 0, 0)']}
@@ -256,7 +137,6 @@ export default function DetalleColeccion() {
                     />
 
                     <BlurView intensity={50} style={styles.blurOverlay}>
-                        {/* Imagen y título fijos */}
                         <ScrollView contentContainerStyle={{ alignItems: "center", paddingBottom: 60 }}>
                             <TouchableOpacity
                                 onPress={() => setVisibleModal(true)}
@@ -264,18 +144,13 @@ export default function DetalleColeccion() {
                             >
                                 <Image
                                     style={styles.imagen}
-                                    source={{ uri: `http://192.168.1.12/APP-WEB/App-Web/API_Proyecto/uploads/${coleccion?.nombre_archivo}` }}
+                                    source={{ uri: `${API_URL}/uploads/${coleccion?.nombre_archivo}` }}
                                 />
 
                             </TouchableOpacity>
 
-
-
                             <ThemedText style={styles.titulo}>{coleccion?.titulo}</ThemedText>
 
-
-
-                            {/* Slider horizontal de infoCards */}
                             <ScrollView
                                 horizontal
                                 showsHorizontalScrollIndicator={true}
@@ -284,7 +159,7 @@ export default function DetalleColeccion() {
                                 <ThemedView style={styles.infoCard}>
                                     <ScrollView style={{ backgroundColor: '0000' }}>
                                         <ThemedText style={styles.subtitle}>Descripción:</ThemedText>
-                                        <ThemedText type="defaultSemiBold">
+                                        <ThemedText type="defaultSemiBold" style={styles.texto}>
                                             {coleccion?.descripcion}
                                         </ThemedText>
                                     </ScrollView>
@@ -304,7 +179,7 @@ export default function DetalleColeccion() {
                                 <ThemedView style={styles.infoCard}>
                                     <ScrollView>
                                         <ThemedText style={styles.subtitle}>Información:</ThemedText>
-                                        <ThemedText type="defaultSemiBold">
+                                        <ThemedText type="defaultSemiBold" style={styles.texto}>
                                             Autor: {coleccion?.autor}{'\n'}
                                             Fecha: {coleccion?.fecha}{'\n'}
                                             Tipo: {coleccion?.categoria}{'\n'}
@@ -316,8 +191,7 @@ export default function DetalleColeccion() {
                             </ScrollView>
                             <View style={styles.botonesFila}>
 
-                                {/* ❤️ Me gusta */}
-                                <TouchableOpacity onPress={()=>like()} style={styles.botonDelicado}
+                                <TouchableOpacity onPress={() => like()} style={styles.botonDelicado}
                                 >
                                     <Ionicons
                                         name={isLiked && user ? "heart" : "heart-outline"}
@@ -326,7 +200,7 @@ export default function DetalleColeccion() {
                                     />
                                 </TouchableOpacity>
 
-                                {/* 🔊 Botón de audio */}
+
                                 <TouchableOpacity
                                     onPress={() => {
                                         if (reading) detener();
@@ -355,8 +229,16 @@ export default function DetalleColeccion() {
                                             </View>
                                         ))
                                     ) : (
-                                        <Text style={{ color: '#ccc' }}>Aún no hay comentarios.</Text>
+                                        <Text style={[styles.sincomentario, { color: '#ccc' }]}>Aún no hay comentarios.</Text>
                                     )}
+                                    
+                                    <TouchableOpacity onPress={() => comentario()}>
+                                        <ThemedView style={[styles.inputSimulado]}>
+
+                                            <ThemedText style={styles.placeholder}>Escribe un comentario...</ThemedText>
+                                        </ThemedView>
+                                    </TouchableOpacity>
+                                    
                                 </ScrollView>
                             </ThemedView>
                         </ScrollView>
@@ -370,8 +252,6 @@ export default function DetalleColeccion() {
                 animationType="fade"
             >
                 <View style={styles.modalContent}>
-
-                    {/* CARRUSEL */}
                     <FlatList
                         data={Media}
                         keyExtractor={(item, index) => index.toString()}
@@ -381,7 +261,7 @@ export default function DetalleColeccion() {
                         renderItem={renderMedia}
                     />
 
-                    {/* BOTÓN CERRAR */}
+
                     <TouchableOpacity
                         style={styles.closeButtonContainer}
                         onPress={() => setVisibleModal(false)}
@@ -399,6 +279,39 @@ export default function DetalleColeccion() {
 
 
 const styles = StyleSheet.create({
+    sincomentario:{
+        marginTop:8,
+        marginHorizontal: 70,
+    },
+    inputSimulado: {
+        height: 50,
+        width: 318,
+        borderRadius: 32,
+        //paddingHorizontal: 8,
+        justifyContent: 'flex-start',
+        alignItems: 'center',      // centra verticalmente
+        flexDirection: 'row',      // pone icono y texto en línea
+        
+        marginTop: 28,
+        backgroundColor: 'rgba(255, 255, 255, 0.15)', // efecto vidrio
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        shadowColor: '#6a6a6aff',
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 5 },
+        elevation: 8,
+
+    },
+    placeholder: {
+        color: '#e4e4e3ff',
+        marginLeft: 16,
+        fontSize: 14,
+    },
+    icono: {
+        marginLeft: 16,
+        color: '#706c65ff',
+    },
     botonera: {
         flexDirection: "row",
         justifyContent: "center",
@@ -494,6 +407,9 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#fff',
     },
+    texto: {
+        color: '#fff'
+    },
     tagsWrapper: {
         backgroundColor: 'transparent',
         flexDirection: 'row',
@@ -514,6 +430,14 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         padding: 10,
         marginBottom: 10,
+    },
+    cajita: {
+        backgroundColor: '#ff6f001d',
+        padding: 10,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: '#fcb37cff'
+
     },
     comentarioUser: {
         color: '#fff',
@@ -552,6 +476,7 @@ const styles = StyleSheet.create({
         zIndex: 10,
     },
     closeButton: {
+        marginTop: 32,
         fontSize: 16,
         color: "white",
         fontWeight: "bold"
@@ -605,17 +530,17 @@ const styles = StyleSheet.create({
         borderColor: "rgba(255,255,255,0.25)",
     },
     bloqueoPremium: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.6)",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 10,
-    borderRadius: 10,
-}
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0,0,0,0.6)",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 10,
+        borderRadius: 10,
+    }
 
 });
 

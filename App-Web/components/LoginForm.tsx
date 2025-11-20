@@ -1,5 +1,5 @@
 import appFireBase from '../credenciales';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from 'react';
 import { ThemedView } from './themed-view';
 import { View, StyleSheet } from 'react-native';

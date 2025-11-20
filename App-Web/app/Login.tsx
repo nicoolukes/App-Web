@@ -1,41 +1,42 @@
 import LoginForm from "@/components/LoginForm";
-import appFireBase from '../credenciales';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useState } from "react";
-import { useNavigation } from '@react-navigation/native';
-import { router, Stack } from "expo-router";
+import { router } from "expo-router";
 import { Colors } from "../constants/theme";
 import { useColorScheme } from "../hooks/use-color-scheme";
 import { Dimensions } from "react-native";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { TouchableOpacity, StyleSheet } from "react-native";
 import BackBoton from "@/components/BackBoton";
-import * as LocalAuthentication from 'expo-local-authentication';
+import { useAuthUser } from "../hooks/use-auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
 export default function LoginScreen() {
     const [isLogin, setIsLogin] = useState(true);
-    const [loading, setLoading] = useState(true);
-
+    const user = useAuthUser();
     const colorScheme = useColorScheme();
     const colors = Colors[colorScheme ?? 'light'];
 
-    const loginCorrecto = () => {
+    const loginCorrecto = async() => {
         router.push("/");
+        await AsyncStorage.setItem("logueo", "true")
     }
-
-    
 
     return (
         <ThemedView style={estilo.padre}>
-            <BackBoton />
+            {!user?(
+                <BackBoton />
+            ):(
+                null
+            )}
+            
 
 
 
-            <ThemedView style={[estilo.contenerdorFormulario, /*{ backgroundColor: colors.superficie }*/]}>
-                <ThemedView /*style={{ backgroundColor: colors.superficie }}*/ >
+            <ThemedView style={[estilo.contenerdorFormulario, ]}>
+                <ThemedView  >
                     {isLogin ? (
                         <ThemedText type="title" style={estilo.titulo}>
                             Iniciar Sesión
@@ -68,10 +69,6 @@ export default function LoginScreen() {
                     )}
                 </TouchableOpacity>
             </ThemedView>
-
-
-
-
         </ThemedView>
 
     )
@@ -80,9 +77,7 @@ export default function LoginScreen() {
 const estilo = StyleSheet.create({
     padre: {
         flex: 1,
-        //paddingTop: 80, // Espacio superior
-        paddingHorizontal: 24, // Margen horizontal
-
+        paddingHorizontal: 24,
         alignItems: 'center',
         justifyContent: 'center',
 
@@ -90,39 +85,29 @@ const estilo = StyleSheet.create({
 
     contenerdorFormulario: {
         width: Dimensions.get('window').width - 0,
-        maxWidth: 400, // Limita el ancho en pantallas grandes
-        alignSelf: 'center', // Centra el contenedor del formulario en la pantalla
+        maxWidth: 400, 
+        alignSelf: 'center', 
         padding: 32,
-        borderRadius: 24, // Bordes redondeados para el 'panel' del formulario
-        /* shadowOpacity: 0.5, // Sombra sutil
-         shadowRadius: 16,
-         elevation: 8,*/
+        borderRadius: 24, 
         margin: 0,
-
     },
 
     titulo: {
         textAlign: 'center',
         marginBottom: 30,
         fontFamily: 'MerriweatherSans_700Bold',
-
-
     },
 
     opcionRegistro: {
         marginTop: 16,
         fontSize: 14,
         textAlign: 'center',
-
-
-
     },
+
     link: {
-        color: '#2F5D50', // verde fuerte, el mismo del botón "Iniciar Sesión"
+        color: '#2F5D50', 
         fontSize: 14,
         fontWeight: 'bold',
 
     }
-
-
 })
