@@ -2,7 +2,7 @@
 import fetch from "node-fetch"; // si usás Node 18+ podés omitirlo y usar fetch directamente
 
 // token del dispositivo (Expo push token que ves en consola)
-const EXPO_PUSH_TOKEN = "ExponentPushToken[jRjTEJNvYSq5Hjp1g0clwI]"; 
+const EXPO_PUSH_TOKEN = "ExponentPushToken[xj6hVoPLU9UtgtTPvyWpq6]"; 
 
 async function sendPushNotification() {
   const message = {

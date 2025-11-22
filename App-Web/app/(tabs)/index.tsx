@@ -31,7 +31,7 @@ export default function Index() {
   return (
     <>
       <ThemedView style={estilo.padre}>
-        <HomeHeader titulo=" Explorá las maravillas del museo... " />
+        <HomeHeader titulo=" Explorá las maravillas del  museo... " />
 
         <ScrollView>
           <ThemedView style={estilo.body}>
@@ -80,7 +80,7 @@ export default function Index() {
               <Categoria
                 icono="https://img.icons8.com/metro/52/ant.png"
                 title=' Insectos '
-                categoria="Insecto"
+                categoria=" Insecto "
               />
               <Categoria
                 icono="https://img.icons8.com/forma-thin-filled-sharp/48/lotus--v2.png"

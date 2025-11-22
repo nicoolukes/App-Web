@@ -2,7 +2,7 @@ import { getAuth, User } from "firebase/auth";
 import {API_URL} from "../src/config/config"
 
 export const actualizarUsuario= async(usuario: User | null, premiunn: boolean ) => {
-    console.log("Legooooooooo")
+    //console.log("Legooooooooo")
     try{
         if (!usuario?.uid) return;
         const respuesta = await fetch(`${API_URL}/endpoints/actualizarUsuario.php?`, {
@@ -14,7 +14,7 @@ export const actualizarUsuario= async(usuario: User | null, premiunn: boolean ) 
                     }).toString(),
                 });
                 const data = await respuesta.json();
-                console.log('Usuario actualizado a premiun:', data);
+                //console.log('Usuario actualizado a premiun:', data);
     }catch(error){
         console.error('Error al actualizar usuario:', error);
     }
