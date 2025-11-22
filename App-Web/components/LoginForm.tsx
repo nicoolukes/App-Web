@@ -33,8 +33,8 @@ export default function LoginForm({onSubmit}: {onSubmit: () => void}) {
     
     
     return(
-        <ThemedView style={[estilo.contenedor, /*{ backgroundColor: colors.superficie }*/]}>
-            <ThemedView /*style={{backgroundColor: colors.superficie}}*/ >
+        <ThemedView style={[estilo.contenedor,]}>
+            <ThemedView  >
                 <CampoInput 
                     icon="mail-outline"
                     placeholder="Email"
